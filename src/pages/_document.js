@@ -8,7 +8,7 @@ export default function Document() {
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#111827" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-        <meta name="description" content="EduPrompt: App PWA educativa con LLM y prompt engineering." />
+        <meta name="description" content="CuidaTuPresión: App PWA." />
       </Head>
       <body>
         <Main />

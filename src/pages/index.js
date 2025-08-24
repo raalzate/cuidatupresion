@@ -1,16 +1,20 @@
 import { useSession, signOut } from "next-auth/react";
 
 export default function Home() {
+  const { data: session, status } = useSession();
 
-   const { data: session } = useSession();
+  if (status === "loading") {
+    return <p>Cargando...</p>;
+  }
 
   return (
     <div style={styles.page}>
       <header style={styles.header}>
-        <h1 style={styles.h1}>EduPrompt ✨</h1>
+        <h1 style={styles.h1}>CuidaTuPresión ✨</h1>
         <div style={styles.subtitle}>
           {!session ? (
-            "No has iniciado sesión ") : (
+            "No has iniciado sesión "
+          ) : (
             <>
               <span>Hola, {session.user.name} </span>
               <button
@@ -25,18 +29,12 @@ export default function Home() {
       </header>
 
       <main style={styles.main}>
-        <div style={styles.col}>
-         Opciones de menu
-        </div>
-        <div style={styles.col}>
-         Contenido principal
-        </div>
+        <div style={styles.col}>Opciones de menu</div>
+        <div style={styles.col}>Contenido principal</div>
       </main>
 
       <footer style={styles.footer}>
-        <small>
-          Footer
-        </small>
+        <small>Footer</small>
       </footer>
     </div>
   );
