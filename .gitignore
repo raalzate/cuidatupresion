@@ -1,0 +1,39 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log*
+
+# Next.js
+.next/
+out/
+build/
+
+# Archivos de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+*.log.*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editor de código
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Cachés
+.cache/
+.next/cache/

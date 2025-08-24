@@ -1,0 +1,36 @@
+{
+  "name": "proyect-01",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "echo \"(opcional)\"",
+    "test": "jest --watch",
+    "test:ci": "jest --ci"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "next-auth": "^4.24.11",
+    "next-pwa": "5.6.0",
+    "react": "18.3.1",
+    "react-collapse": "^5.1.1",
+    "react-dom": "18.3.1",
+    "react-markdown": "^10.1.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.28.3",
+    "@babel/preset-react": "^7.27.1",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.7.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/jest": "^30.0.0",
+    "@types/react": "19.1.10",
+    "babel-jest": "^30.0.5",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
+    "ts-node": "^10.9.2",
+    "typescript": "5.9.2"
+  }
+}
