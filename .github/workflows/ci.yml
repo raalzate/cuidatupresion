@@ -26,13 +26,14 @@ jobs:
 
     - name: Run tests
       run: npm run test:ci -- --coverage  
-      
+
     - name: Run Codacy Coverage Reporter
       uses: codacy/codacy-coverage-reporter-action@v1
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         coverage-reporter-version: '13.13.15'  # O la versión más reciente disponible
-
+        coverage-file: './coverage/lcov.info'
+        
     - name: Deploy to Vercel
       env:
         VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
