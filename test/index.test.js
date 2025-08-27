@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import Home from "../src/pages/index";
+import Home from "../pages/index";
 import { useSession, signOut } from "next-auth/react";
 
 // index.test.js

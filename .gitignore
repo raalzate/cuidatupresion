@@ -37,3 +37,6 @@ Thumbs.db
 # Cachés
 .cache/
 .next/cache/
+
+
+coverage
