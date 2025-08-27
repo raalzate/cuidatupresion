@@ -33,7 +33,8 @@ jobs:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         coverage-reporter-version: '13.13.15'  # O la versión más reciente disponible
         coverage-file: './coverage/lcov.info'
-        
+        final: true
+
     - name: Deploy to Vercel
       env:
         VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
