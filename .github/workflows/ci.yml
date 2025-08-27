@@ -19,25 +19,26 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '22'
+        node-version: '22'  # Cambia la versión si es necesario
 
     - name: Install dependencies
       run: npm install
 
     - name: Run tests
-      run: npm run test:ci -- --coverage
+      run: npm run test:ci -- --coverage  # Asumiendo que tienes un script "test:ci" configurado
 
-    - name: Set up SonarCloud
-      uses: SonarSource/sonarcloud-github-action@master
-      with:
-        sonar-token: ${{ secrets.SONAR_TOKEN }}
-
-    - name: SonarCloud analysis
+    - name: Set up Codacy
       run: |
-        sonar-scanner
+        curl -sSL https://github.com/codacy/codacy-coverage-reporter/releases/download/v6.0.0/codacy-coverage-reporter-linux-amd64-6.0.0.zip -o codacy-coverage-reporter.zip
+        unzip codacy-coverage-reporter.zip
+        chmod +x codacy-coverage-reporter
+
+    - name: Upload coverage to Codacy
+      run: |
+        ./codacy-coverage-reporter report -l JavaScript -r coverage/lcov-report/index-lcov-report.txt  # Ajusta la ruta según el reporte de cobertura
       env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    
+        CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+
     - name: Deploy to Vercel
       env:
         VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
