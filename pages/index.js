@@ -21,7 +21,7 @@ export default function Home() {
                 onClick={() => signOut({ callbackUrl: "/login" })}
                 style={{ marginLeft: 8, cursor: "pointer" }}
               >
-                (Cerrar sesión)
+                Cerrar sesión
               </button>
             </>
           )}

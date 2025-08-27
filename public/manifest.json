@@ -1,11 +1,11 @@
 {
-  "name": "EduPrompt",
-  "short_name": "EduPrompt",
+  "name": "CuidaTuPresión",
+  "short_name": "CuidaTuPresión",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#111827",
-  "description": "App PWA educativa para usar LLMs con técnicas de prompt engineering.",
+  "description": "CuidaTuPresión: App PWA.",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
