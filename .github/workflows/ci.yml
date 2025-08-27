@@ -27,11 +27,11 @@ jobs:
     - name: Run tests
       run: npm run test:ci -- --coverage  # Asumiendo que tienes un script "test:ci" configurado
 
-  - name: Run Codacy Coverage Reporter
-      uses: codacy/codacy-coverage-reporter-action@v1
-      with:
-        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        coverage-reporter-version: '13.13.15'  # O la versión más reciente disponible
+    - name: Run Codacy Coverage Reporter
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reporter-version: '13.13.15'  # O la versión más reciente disponible
 
     - name: Deploy to Vercel
       env:
