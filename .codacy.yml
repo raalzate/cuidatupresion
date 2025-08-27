@@ -1,23 +1,10 @@
-version: 2.0
-
-# Restricciones de análisis
-analyzers:
-  - eslint  # Si usas ESLint para análisis estático
-
-# Definir los directorios a analizar
-paths:
-  include:
-    - "pages/**/*"  # Incluye solo los archivos dentro de pages/
-  exclude:
-    - "**/node_modules/**"  # Excluye node_modules
-    - "**/coverage/**"  # Excluye el directorio de cobertura (si lo tienes)
-
-# Opciones de configuración de ESLint (si es el análisis que usas)
-eslint:
-  rules:
-    # Configura las reglas según tu preferencia
-    "no-console": "warn"
-    "no-unused-vars": "error"
-
-# Otras configuraciones adicionales (seguridad, estilo, etc.)
-# Si estás usando otro tipo de análisis (como TypeScript, etc.), agrégalo aquí.
+    engines:
+      eslint:
+        exclude_paths:
+          - "node_modules/**"
+          - ".next/**" 
+          - ".swc/**"
+          - "coverage/**"
+          - ".giyhub/**"
+          - "test/**"
+          - "public/**"

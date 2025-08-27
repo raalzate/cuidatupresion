@@ -31,9 +31,6 @@ jobs:
       uses: codacy/codacy-coverage-reporter-action@v1
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        coverage-reporter-version: '13.13.15'  # O la versión más reciente disponible
-        coverage-file: './coverage/lcov.info'
-        final: true
 
     - name: Deploy to Vercel
       env:
