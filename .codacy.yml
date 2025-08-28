@@ -1,4 +1,3 @@
----
 # --- Configuración de Codacy para un Proyecto Next.js ---
 version: 1
 
@@ -38,6 +37,8 @@ exclude_paths:
   - "dist/**/*"
   - "coverage/**/*"
   - "public/**/*"
-  - "next-env.d.ts"
-  - "*.config.js" # Excluye next.config.js, tailwind.config.js, etc.
+  - "next-env.d.js"
+  - "*.setup.js" #
+  - "*.config.js" # 
   - "*.config.mjs"
+  - "package.json"
