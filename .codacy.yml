@@ -1,35 +1,34 @@
-# --- Configuración de Codacy para un Proyecto Next.js ---
-version: 1
+# El archivo debe empezar obligatoriamente con esta línea.
+---
 
-# Habilita los motores de análisis de código.
-# Codacy ejecutará estas herramientas en tu código.
+# La sección 'engines' se usa para ACTIVAR o DESACTIVAR herramientas.
+# Es como un interruptor general para cada motor de análisis.
 engines:
-  # ESLint es el linter estándar para JavaScript y TypeScript. Esencial para Next.js.
   eslint:
     enabled: true
-  # Stylelint es el linter para archivos CSS, SCSS o CSS-in-JS.
   stylelint:
     enabled: true
-  # PMD (Programming Mistake Detector) es excelente para detectar código duplicado (CPD).
-  pmd:
+  # 'duplication' es el motor genérico para detectar código duplicado.
+  # Se le puede pasar configuración directamente aquí.
+  duplication:
     enabled: true
-  # Semgrep es un motor de análisis estático (SAST) rápido y moderno para encontrar bugs y vulnerabilidades.
-  semgrep:
-    enabled: true
+    config:
+      languages:
+        - javascript
+        - typescript
 
-# Configuración específica para cada herramienta.
+# La sección 'tools' se usa para la CONFIGURACIÓN AVANZADA de una herramienta específica.
+# Aquí le decimos a ESLint y Stylelint que usen nuestros archivos de configuración locales.
 tools:
   eslint:
-    # Asegura que Codacy use tu propio archivo de configuración de ESLint.
-    # Esto mantiene la consistencia entre tu entorno local y el análisis en la nube.
-    # Asegúrate de que el nombre del archivo coincida con el tuyo (.eslintrc.js, .eslintrc.json, etc.).
+    # Le indica a la herramienta ESLint que use el archivo de configuración de nuestro proyecto.
     config_file: .eslintrc.json
   stylelint:
-    # De igual forma, usa tu configuración local de Stylelint.
+    # Le indica a la herramienta Stylelint que use el archivo de configuración de nuestro proyecto.
     config_file: .stylelintrc.json
 
-# Lista de carpetas y archivos que Codacy debe ignorar.
-# Es crucial para evitar analizar dependencias, archivos de build y código generado.
+# La sección 'exclude_paths' define rutas que serán IGNORADAS POR TODAS las herramientas.
+# Es ideal para carpetas de dependencias, builds y otros archivos generados.
 exclude_paths:
   - "node_modules/**/*"
   - ".next/**/*"
@@ -37,8 +36,7 @@ exclude_paths:
   - "dist/**/*"
   - "coverage/**/*"
   - "public/**/*"
-  - "next-env.d.js"
-  - "*.setup.js" #
-  - "*.config.js" # 
+  - "next-env.d.ts"
+  - "*.config.js"
+  - "*.setup.js"
   - "*.config.mjs"
-  - "package.json"
