@@ -1,10 +1,43 @@
 ---
-  engines:
-    exclude_paths:
-      - "node_modules/**"
-      - ".next/**" 
-      - ".swc/**"
-      - "coverage/**"
-      - ".giyhub/**"
-      - "test/**"
-      - "public/**"
+# --- Configuración de Codacy para un Proyecto Next.js ---
+version: 1
+
+# Habilita los motores de análisis de código.
+# Codacy ejecutará estas herramientas en tu código.
+engines:
+  # ESLint es el linter estándar para JavaScript y TypeScript. Esencial para Next.js.
+  eslint:
+    enabled: true
+  # Stylelint es el linter para archivos CSS, SCSS o CSS-in-JS.
+  stylelint:
+    enabled: true
+  # PMD (Programming Mistake Detector) es excelente para detectar código duplicado (CPD).
+  pmd:
+    enabled: true
+  # Semgrep es un motor de análisis estático (SAST) rápido y moderno para encontrar bugs y vulnerabilidades.
+  semgrep:
+    enabled: true
+
+# Configuración específica para cada herramienta.
+tools:
+  eslint:
+    # Asegura que Codacy use tu propio archivo de configuración de ESLint.
+    # Esto mantiene la consistencia entre tu entorno local y el análisis en la nube.
+    # Asegúrate de que el nombre del archivo coincida con el tuyo (.eslintrc.js, .eslintrc.json, etc.).
+    config_file: .eslintrc.json
+  stylelint:
+    # De igual forma, usa tu configuración local de Stylelint.
+    config_file: .stylelintrc.json
+
+# Lista de carpetas y archivos que Codacy debe ignorar.
+# Es crucial para evitar analizar dependencias, archivos de build y código generado.
+exclude_paths:
+  - "node_modules/**/*"
+  - ".next/**/*"
+  - "build/**/*"
+  - "dist/**/*"
+  - "coverage/**/*"
+  - "public/**/*"
+  - "next-env.d.ts"
+  - "*.config.js" # Excluye next.config.js, tailwind.config.js, etc.
+  - "*.config.mjs"
