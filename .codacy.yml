@@ -30,12 +30,12 @@ tools:
 # La sección 'exclude_paths' define rutas que serán IGNORADAS POR TODAS las herramientas.
 # Es ideal para carpetas de dependencias, builds y otros archivos generados.
 exclude_paths:
-  - "node_modules/**/*"
-  - ".next/**/*"
-  - "build/**/*"
-  - "dist/**/*"
-  - "coverage/**/*"
-  - "public/**/*"
+  - "node_modules/**"
+  - ".next/**"
+  - "build/**"
+  - "dist/**"
+  - "coverage/**"
+  - "public/**"
   - "next-env.d.ts"
   - "*.config.js"
   - "*.setup.js"
