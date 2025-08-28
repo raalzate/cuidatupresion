@@ -1,10 +1,10 @@
-    engines:
-      eslint:
-        exclude_paths:
-          - "node_modules/**"
-          - ".next/**" 
-          - ".swc/**"
-          - "coverage/**"
-          - ".giyhub/**"
-          - "test/**"
-          - "public/**"
+---
+  engines:
+    exclude_paths:
+      - "node_modules/**"
+      - ".next/**" 
+      - ".swc/**"
+      - "coverage/**"
+      - ".giyhub/**"
+      - "test/**"
+      - "public/**"
