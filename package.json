@@ -28,8 +28,12 @@
     "@types/jest": "^30.0.0",
     "@types/react": "19.1.10",
     "babel-jest": "^30.0.5",
+    "eslint": "^9.34.0",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
+    "stylelint": "^16.23.1",
+    "stylelint-config-recess-order": "^7.2.0",
+    "stylelint-config-standard-scss": "^15.0.1",
     "ts-node": "^10.9.2",
     "typescript": "5.9.2"
   }
