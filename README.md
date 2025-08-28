@@ -1,5 +1,7 @@
 # CuidaTuPresión
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/0378a447e8c94eb5b64ca556fc1e59d5)](https://app.codacy.com/gh/raalzate/cuidatupresion/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d23b250378cb4cd7bc0b9d4994b012a4)](https://app.codacy.com/gh/raalzate/cuidatupresion/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/d23b250378cb4cd7bc0b9d4994b012a4)](https://app.codacy.com/gh/raalzate/cuidatupresion/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 
 **CuidaTuPresión** es una aplicación móvil diseñada para personas mayores y pacientes con hipertensión.
 El objetivo principal es **empoderar a los usuarios** para que tomen un papel activo en la gestión de su salud cardiovascular.
