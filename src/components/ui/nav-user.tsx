@@ -5,10 +5,11 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
   Sparkles,
+  Settings2,
 } from "lucide-react";
+import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -104,9 +105,11 @@ export function NavUser({
                 Account
               </DropdownMenuItem>
 
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
+              <DropdownMenuItem asChild>
+                <Link href="/user1/settings">
+                  <Settings2 />
+                  Actualizar datos
+                </Link>
               </DropdownMenuItem>
 
               <DropdownMenuItem>
