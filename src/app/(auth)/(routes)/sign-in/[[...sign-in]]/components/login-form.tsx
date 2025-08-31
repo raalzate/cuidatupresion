@@ -14,7 +14,7 @@ export function LoginForm({
   const handleSignIn = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    signIn("google");
+    signIn("google", { callbackUrl: "/user1/history" });
   };
 
   return (

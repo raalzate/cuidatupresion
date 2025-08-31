@@ -1,9 +1,7 @@
 import { SettingsForm } from "./components/settings-form";
 
 interface SettingsPageProps {
-  params: {
-    userId: string;
-  };
+  params: Promise<{ userId: string }>;
 }
 
 const SettingsPage: React.FC<SettingsPageProps> = ({ params }) => {

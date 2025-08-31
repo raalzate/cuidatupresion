@@ -7,9 +7,7 @@ import { HistoryTimeline } from "./components/history-timeline";
 import "react-vertical-timeline-component/style.min.css";
 
 interface HistoryPageProps {
-  params: {
-    userId: string;
-  };
+  params: Promise<{ userId: string }>;
 }
 
 const MEDICAL_INTAKES = [

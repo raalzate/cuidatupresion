@@ -9,7 +9,7 @@ export default NextAuth({
     }),
   ],
   pages: {
-    signIn: "/login", // Usa tu login personalizado
+    signIn: "/sign-in", // Usa tu login personalizado
   },
   secret: process.env.NEXTAUTH_SECRET,
 });

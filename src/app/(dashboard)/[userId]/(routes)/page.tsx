@@ -1,7 +1,5 @@
 interface DashboardPageProps {
-  params: {
-    userId: string;
-  };
+  params: Promise<{ userId: string }>;
 }
 
 const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
