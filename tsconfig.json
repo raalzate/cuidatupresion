@@ -17,9 +17,6 @@
         "name": "next"
       }
     ],
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "strictNullChecks": true,
     "types": ["node"],
     "target": "ES2017"
