@@ -33,7 +33,7 @@ export const HistoryTimeline: React.FC<HistoryTimelineProps> = ({
             alt="Blood Pressure"
             className="w-[60%] h-[60%] object-contain"
             height={100}
-            src="/images/blood-presure.png"
+            src="/images/blood-pressure.png"
             width={100}
           />
         </div>

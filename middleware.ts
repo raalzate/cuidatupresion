@@ -8,8 +8,8 @@ export default withAuth({
 
 export const config = {
   matcher: [
-    "/:userId((?!api|_next|static|favicon.ico).*)/settings",
-    "/:userId((?!api|_next|static|favicon.ico).*)/history",
-    "/:userId((?!api|_next|static|favicon.ico).*)",
+    "/:userId((?!api|_next|static|favicon.ico|images|icons).*)/settings",
+    "/:userId((?!api|_next|static|favicon.ico|images|icons).*)/history",
+    "/:userId((?!api|_next|static|favicon.ico|images|icons).*)",
   ], // Rutas protegidas
 };

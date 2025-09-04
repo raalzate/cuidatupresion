@@ -64,7 +64,7 @@ export function LoginForm({
               alt="Image"
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
               height={300}
-              src="images/placeholder.svg"
+              src="/images/placeholder.svg"
               width={300}
             />
           </div>
