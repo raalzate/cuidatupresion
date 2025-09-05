@@ -3,9 +3,9 @@
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 
-import { cn } from "../../../../../../lib/utils";
-import { Button } from "../../../../../../components/ui/button";
-import { Card, CardContent } from "../../../../../../components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 export function LoginForm({
   className,

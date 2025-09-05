@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model RelevantConditions {
+  id String @id @default(uuid())
+  description String
+  patientId String
+  patient Patient @relation(fields: [patientId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([patientId])
+}
+
+model Medications {
+  id String @id @default(uuid())
+  description String
+  patientId String
+  patient Patient @relation(fields: [patientId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([patientId])
+}
+
+model AlertTags {
+  id String @id @default(uuid())
+  description String
+  alertThresholdId String
+  alertThreshold AlertThresholds @relation(fields: [alertThresholdId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([alertThresholdId])
+}
+
+model AlertThresholds {
+  id String @id @default(uuid())
+  patientId String
+  patient Patient @relation(fields: [patientId], references: [id])
+  diastolicPressure Int @default(0)
+  systolicPressure Int @default(0)
+  heartRate Int @default(0)
+  tags AlertTags[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([patientId])
+}
+
+model Patient {
+  id String @id @default(uuid())
+  relevantConditions RelevantConditions[]
+  medications Medications[]
+  alertThresholds AlertThresholds[]
+  doctorId String
+  doctor Doctor @relation(fields: [doctorId], references: [id])
+  name String
+  email String @unique
+  birthdate DateTime
+  gender String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([doctorId])
+}
+
+model Doctor {
+  id String @id @default(uuid())
+  name String
+  accessCode String @unique
+  patients Patient[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

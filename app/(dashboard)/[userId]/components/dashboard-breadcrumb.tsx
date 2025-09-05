@@ -3,7 +3,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-} from "../../../../components/ui/breadcrumb";
+} from "@/components/ui/breadcrumb";
 
 export function DashboardBreadcrumb() {
   return (
