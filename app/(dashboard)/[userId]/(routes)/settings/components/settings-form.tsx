@@ -1,9 +1,9 @@
 "use client";
 
-import { default as ReactSelect } from "react-select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import dynamic from "next/dynamic";
 import makeAnimated from "react-select/animated";
 
 import {
@@ -13,11 +13,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../../../../../components/ui/form";
-import { Heading } from "../../../../../../components/shared/heading/heading";
-import { Input } from "../../../../../../components/ui/input";
-import { Separator } from "../../../../../../components/shared/separator/separator";
-import { Button } from "../../../../../../components/ui/button";
+} from "@/components/ui/form";
+import { Heading } from "@/components/shared/heading/heading";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/shared/separator/separator";
+import { Button } from "@/components/ui/button";
+
+const CreatableSelect = dynamic(() => import("react-select/creatable"), {
+  ssr: false,
+});
 
 const formSchema = z.object({
   diastolicPressure: z
@@ -149,7 +153,7 @@ export const SettingsForm: React.FC<MedicalFormProps> = ({ initialData }) => {
                   <FormLabel>Observaciones adicionales</FormLabel>
 
                   <FormControl>
-                    <ReactSelect
+                    <CreatableSelect
                       closeMenuOnSelect={false}
                       components={animatedComponents}
                       defaultValue={field.value.map((tag: string) => ({

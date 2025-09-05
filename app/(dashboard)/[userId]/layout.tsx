@@ -1,11 +1,11 @@
 import { DashboardBreadcrumb } from "./components/dashboard-breadcrumb";
 import { DashboardSidebar } from "./components/dashboard-sidebar";
-import { Separator } from "../../../components/shared/separator/separator";
+import { Separator } from "@/components/shared/separator/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "../../../components/ui/sidebar";
+} from "@/components/ui/sidebar";
 
 export default async function DashboardLayout({
   children,

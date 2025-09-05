@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
+    "@prisma/client": "^6.15.0",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -56,6 +57,7 @@
     "eslint-config-next": "15.5.0",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
+    "prisma": "^6.15.0",
     "stylelint": "^16.23.1",
     "stylelint-config-recess-order": "^7.2.0",
     "stylelint-config-standard-scss": "^15.0.1",
