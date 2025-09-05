@@ -13,33 +13,6 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Patient } from "@prisma/client";
-import { useAuthStore } from "@/stores/auth/auth.store";
-
-const formSchema = z.object({
-  doctorAccessCode: z
-    .string()
-    .min(6, "El código de acceso del doctor debe tener al menos 6 caracteres"),
-});
-
-type DoctorFormValues = z.infer<typeof formSchema>;
 
 export function LoginForm({
   className,
