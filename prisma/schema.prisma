@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../lib/generated/prisma"
 }
 
 datasource db {
@@ -17,35 +16,65 @@ datasource db {
 
 model RelevantConditions {
   id String @id @default(uuid())
-  description String
-  patientId String
-  patient Patient @relation(fields: [patientId], references: [id])
+  name String @unique
+  patients PatientRelevantConditions[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
 
+model PatientRelevantConditions {
+  id String @id @default(uuid())
+  patientId String
+  relevantConditionId String
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  relevantCondition RelevantConditions @relation(fields: [relevantConditionId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([patientId, relevantConditionId])
   @@index([patientId])
+  @@index([relevantConditionId])
 }
 
 model Medications {
   id String @id @default(uuid())
-  description String
-  patientId String
-  patient Patient @relation(fields: [patientId], references: [id])
+  name String @unique
+  patients PatientMedications[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
 
+model PatientMedications {
+  id String @id @default(uuid())
+  patientId String
+  medicationId String
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  medication Medications @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([patientId, medicationId])
   @@index([patientId])
+  @@index([medicationId])
 }
 
 model AlertTags {
   id String @id @default(uuid())
-  description String
-  alertThresholdId String
-  alertThreshold AlertThresholds @relation(fields: [alertThresholdId], references: [id])
+  name String @unique
+  alertThresholds AlertThresholdTags[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
 
+model AlertThresholdTags {
+  id String @id @default(uuid())
+  alertThresholdId String
+  alertTagId String
+  alertThreshold AlertThresholds @relation(fields: [alertThresholdId], references: [id], onDelete: Cascade)
+  alertTag AlertTags @relation(fields: [alertTagId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([alertThresholdId, alertTagId])
   @@index([alertThresholdId])
+  @@index([alertTagId])
 }
 
 model AlertThresholds {
@@ -55,7 +84,7 @@ model AlertThresholds {
   diastolicPressure Int @default(0)
   systolicPressure Int @default(0)
   heartRate Int @default(0)
-  tags AlertTags[]
+  tags AlertThresholdTags[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -64,8 +93,8 @@ model AlertThresholds {
 
 model Patient {
   id String @id @default(uuid())
-  relevantConditions RelevantConditions[]
-  medications Medications[]
+  relevantConditions PatientRelevantConditions[]
+  medications PatientMedications[]
   alertThresholds AlertThresholds[]
   doctorId String
   doctor Doctor @relation(fields: [doctorId], references: [id])
@@ -73,6 +102,8 @@ model Patient {
   email String @unique
   birthdate DateTime
   gender String
+  height Int
+  weight Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
