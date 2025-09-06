@@ -1,5 +1,7 @@
-import prismadb from "@/lib/prismadb";
+import { maskValue } from "@/utils/mask-value";
 import { ProfileForm } from "./components/profile-form";
+
+import prismadb from "@/lib/prismadb";
 
 interface SettingsPageProps {
   params: Promise<{ userId: string }>;
@@ -48,7 +50,7 @@ const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
     email: user.email,
     birthdate: user.birthdate || new Date(),
     gender: user.gender || "",
-    doctorAccessCode: user.doctor.accessCode,
+    doctorAccessCode: maskValue(user.doctor.accessCode) || "",
     height: user.height || 0,
     weight: user.weight || 0,
     relevantConditions: user.relevantConditions.map((rc) => ({
