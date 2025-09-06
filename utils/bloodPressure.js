@@ -1,8 +1,14 @@
-import { psyshigh, pdyshigh } from "../config/config.js";
+import { psys_low, pdys_low } from "../config/config";
 
-export function isHypertensiveCrisis(systolic, diastolic) {
-  const sysHigh = parseInt(psyshigh) || 180;
-  const diasHigh = parseInt(pdyshigh) || 120;
+export function isHypotensiveCrisis(systolic, diastolic) {
+  const sysLow = parseInt(psys_low) || 90;
+  const diasLow = parseInt(pdys_low) || 60;
 
-  return systolic >= sysHigh || diastolic >= diasHigh;
+  // Validación segura
+  const validSystolic = typeof systolic === "number" && !isNaN(systolic);
+  const validDiastolic = typeof diastolic === "number" && !isNaN(diastolic);
+
+  if (!validSystolic || !validDiastolic) return false;
+
+  return systolic <= sysLow || diastolic <= diasLow;
 }
