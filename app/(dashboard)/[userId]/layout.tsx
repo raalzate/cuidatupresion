@@ -9,15 +9,10 @@ import {
 
 export default async function DashboardLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
   params: Promise<{ userId: string }>;
 }) {
-  const { userId } = await params;
-
-  console.log({ userId });
-
   return (
     <SidebarProvider>
       <DashboardSidebar />
