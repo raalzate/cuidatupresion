@@ -62,6 +62,8 @@ const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
     birthdate: new Date(),
     gender: "",
     doctorAccessCode: "",
+    height: 0,
+    weight: 0,
   };
 
   if (loading || Object.keys(patient ?? {}).length === 0) {
@@ -82,7 +84,11 @@ const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <ProfileForm initialData={initialData} />
+        <ProfileForm
+          initialData={initialData}
+          medications={medications}
+          relevantConditions={relevantConditions}
+        />
       </div>
     </div>
   );
