@@ -27,6 +27,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "./sidebar";
+import { useAuthStore } from "@/stores/auth/auth.store";
 
 export function NavUser({
   user,
@@ -38,8 +39,10 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const logoutUser = useAuthStore((state) => state.logoutUser);
 
   const handleLogOut = () => {
+    logoutUser();
     signOut({ callbackUrl: "/sign-in" });
   };
 

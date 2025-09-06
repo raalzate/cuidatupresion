@@ -2,7 +2,7 @@
 
 import { signIn, useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -52,12 +52,6 @@ export function LoginForm({
 
   const loginUser = useAuthStore((state) => state.loginUser);
 
-  useEffect(() => {
-    if (status === "authenticated" && session.user && session.user.email) {
-      checkUserEmail(session.user.email);
-    }
-  }, [status, session]);
-
   const form = useForm<DoctorFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -72,29 +66,38 @@ export function LoginForm({
     signIn("google");
   };
 
-  const checkUserEmail = async (email: string) => {
-    try {
-      const { data: user } = await axios.get<Patient>(
-        `/api/users?userEmail=${encodeURIComponent(email)}`
-      );
+  const checkUserEmail = useCallback(
+    async (email: string) => {
+      try {
+        const { data: user } = await axios.get<Patient>(
+          `/api/users?userEmail=${encodeURIComponent(email)}`
+        );
 
-      if (user && user.doctorId) {
-        loginUser(user.id, user.email);
+        if (user && user.doctorId) {
+          loginUser(user.id, user.email);
 
-        router.push(`/${user.id}/profile`);
-      }
-    } catch (error) {
-      console.log("Error:", error);
+          router.push(`/${user.id}/profile`);
+        }
+      } catch (error) {
+        console.log("Error:", error);
 
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 404) {
-          setShowDoctorDialog(true);
-        } else {
-          toast.error(`${error.response?.data}`);
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 404) {
+            setShowDoctorDialog(true);
+          } else {
+            toast.error(`${error.response?.data}`);
+          }
         }
       }
+    },
+    [loginUser, router]
+  );
+
+  useEffect(() => {
+    if (status === "authenticated" && session.user && session.user.email) {
+      checkUserEmail(session.user.email);
     }
-  };
+  }, [status, session, checkUserEmail]);
 
   const handleCreateUser = async (data: DoctorFormValues) => {
     try {
