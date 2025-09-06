@@ -14,6 +14,44 @@ interface SettingsPageProps {
 }
 
 const SettingsPage: React.FC<SettingsPageProps> = ({ params }) => {
+const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
+  const { userId } = await params;
+
+  const user = await prismadb.patient.findUnique({
+    where: {
+      id: userId,
+    },
+    include: {
+      relevantConditions: {
+        include: {
+          relevantCondition: true,
+        },
+      },
+      medications: {
+        include: {
+          medication: true,
+        },
+      },
+      doctor: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error("Usuario no encontrado");
+  }
+
+  const relevantConditions = await prismadb.relevantConditions.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
+
+  const medications = await prismadb.medications.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
+
   const initialData = {
     relevantConditions: [],
     medications: [],
