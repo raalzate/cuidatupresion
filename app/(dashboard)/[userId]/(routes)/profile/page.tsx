@@ -55,15 +55,21 @@ const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
   });
 
   const initialData = {
-    relevantConditions: [],
-    medications: [],
-    name: "",
-    email: "",
-    birthdate: new Date(),
-    gender: "",
-    doctorAccessCode: "",
-    height: 0,
-    weight: 0,
+    name: user.name,
+    email: user.email,
+    birthdate: user.birthdate || new Date(),
+    gender: user.gender || "",
+    doctorAccessCode: user.doctor.accessCode,
+    height: user.height || 0,
+    weight: user.weight || 0,
+    relevantConditions: user.relevantConditions.map((rc) => ({
+      id: rc.relevantCondition.id,
+      name: rc.relevantCondition.name,
+    })),
+    medications: user.medications.map((m) => ({
+      id: m.medication.id,
+      name: m.medication.name,
+    })),
   };
 
   if (loading || Object.keys(patient ?? {}).length === 0) {
