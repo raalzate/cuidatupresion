@@ -12,7 +12,6 @@ import * as z from "zod";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import makeAnimated from "react-select/animated";
-import { Medications, RelevantConditions } from "@prisma/client";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
