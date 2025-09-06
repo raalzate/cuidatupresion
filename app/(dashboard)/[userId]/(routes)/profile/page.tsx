@@ -9,6 +9,8 @@ import { EmptyState } from "@/components/shared/empty-state/empty-state";
 import { maskValue } from "@/utils/mask-value";
 import { ProfileForm } from "./components/profile-form";
 
+import prismadb from "@/lib/prismadb";
+
 interface SettingsPageProps {
   params: Promise<{ userId: string }>;
 }
