@@ -3,13 +3,15 @@
 import { CalendarIcon } from "lucide-react";
 import { es } from "date-fns/locale";
 import { format } from "date-fns";
+import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import axios from "axios";
 import dynamic from "next/dynamic";
 import makeAnimated from "react-select/animated";
-import { Medications, RelevantConditions } from "@prisma/client";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -23,7 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Heading } from "@/components/shared/heading/heading";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/shared/separator/separator";
+import { Medications, RelevantConditions } from "@prisma/client";
 import {
   Popover,
   PopoverContent,
@@ -36,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/shared/separator/separator";
 
 import { GENDERS, INITIAL_DATA } from "../constants";
 
@@ -60,14 +63,22 @@ const formSchema = z.object({
     .string()
     .min(6, "El código de acceso del doctor debe tener al menos 6 caracteres"),
   height: z
-    .number()
-    .min(50, "La altura debe ser mayor a 50 cm")
-    .max(250, "La altura debe ser menor a 250 cm")
-    .int("La altura debe ser un número entero"),
+    .transform(Number)
+    .pipe(
+      z
+        .number()
+        .min(50, "La altura debe ser mayor a 50 cm")
+        .max(250, "La altura debe ser menor a 250 cm")
+        .int("La altura debe ser un número entero")
+    ),
   weight: z
-    .number()
-    .min(10, "El peso debe ser mayor a 10 kg")
-    .max(300, "El peso debe ser menor a 300 kg"),
+    .transform(Number)
+    .pipe(
+      z
+        .number()
+        .min(10, "El peso debe ser mayor a 10 kg")
+        .max(300, "El peso debe ser menor a 300 kg")
+    ),
 });
 
 type ProfileFormValues = z.infer<typeof formSchema>;
@@ -86,6 +97,8 @@ export const ProfileForm: React.FC<MedicalFormProps> = ({
   relevantConditions,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const params = useParams();
+  const router = useRouter();
 
   const relevantConditionsOptions = relevantConditions.map(
     (relevantCondition) => {
@@ -114,7 +127,23 @@ export const ProfileForm: React.FC<MedicalFormProps> = ({
         },
   });
 
-  const onSubmit = () => {};
+  const onSubmit = async (data: ProfileFormValues) => {
+    try {
+      setLoading(true);
+
+      await axios.patch(`/api/users/${params?.userId}`, data);
+
+      router.refresh();
+
+      toast.success("Perfil actualizado correctamente");
+    } catch (error) {
+      console.log("Error:", error);
+
+      toast.error(`${error.response?.data || "Algo salió mal"}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -142,6 +171,7 @@ export const ProfileForm: React.FC<MedicalFormProps> = ({
 
                   <FormControl>
                     <Input
+                      disabled={loading}
                       placeholder="Nombre del paciente"
                       type="text"
                       {...field}
@@ -203,7 +233,9 @@ export const ProfileForm: React.FC<MedicalFormProps> = ({
                         <Calendar
                           captionLayout="dropdown"
                           disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
+                            loading ||
+                            date > new Date() ||
+                            date < new Date("1900-01-01")
                           }
                           formatters={{
                             formatMonthDropdown: (date) =>
@@ -324,6 +356,7 @@ export const ProfileForm: React.FC<MedicalFormProps> = ({
                           value: relevantCondition.id,
                         })
                       )}
+                      isDisabled={loading}
                       onChange={(
                         relevantCondition: Array<{
                           label: string;
@@ -376,6 +409,7 @@ export const ProfileForm: React.FC<MedicalFormProps> = ({
                           value: medication.id,
                         })
                       )}
+                      isDisabled={loading}
                       onChange={(
                         medication: Array<{
                           label: string;
@@ -419,7 +453,12 @@ export const ProfileForm: React.FC<MedicalFormProps> = ({
                   <FormLabel>Altura del paciente (cm)</FormLabel>
 
                   <FormControl>
-                    <Input placeholder="Altura" type="number" {...field} />
+                    <Input
+                      disabled={loading}
+                      placeholder="Altura"
+                      type="number"
+                      {...field}
+                    />
                   </FormControl>
 
                   <FormMessage />
@@ -435,7 +474,12 @@ export const ProfileForm: React.FC<MedicalFormProps> = ({
                   <FormLabel>Peso del paciente (kg)</FormLabel>
 
                   <FormControl>
-                    <Input placeholder="Peso" type="number" {...field} />
+                    <Input
+                      disabled={loading}
+                      placeholder="Peso"
+                      type="number"
+                      {...field}
+                    />
                   </FormControl>
 
                   <FormMessage />

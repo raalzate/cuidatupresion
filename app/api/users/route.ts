@@ -70,7 +70,7 @@ export async function POST(req: Request) {
     });
 
     if (!doctor) {
-      return new NextResponse("Código de acceso del doctor inválido", {
+      return new NextResponse("Código de acceso del doctor no válido", {
         status: 400,
       });
     }
