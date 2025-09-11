@@ -1,10 +1,10 @@
-import { SettingsForm } from "./components/settings-form";
+import { MeasurementForm } from "./components/measurement-form";
 
-interface SettingsPageProps {
+interface MeasurementPageProps {
   params: Promise<{ userId: string }>;
 }
 
-const SettingsPage: React.FC<SettingsPageProps> = ({ params }) => {
+const MeasurementPage: React.FC<MeasurementPageProps> = ({ params }) => {
   const initialData = {
     diastolicPressure: 0,
     heartRate: 0,
@@ -15,9 +15,9 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ params }) => {
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <SettingsForm initialData={initialData} />
+        <MeasurementForm initialData={initialData} />
       </div>
     </div>
   );
 };
-export default SettingsPage;
+export default MeasurementPage;
