@@ -215,12 +215,12 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
       </Form>
 
       <Modal
-        description="Mundo"
+        description="Confirmar lectura de presion"
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         title="Hola"
       >
-        <p>Hola</p>
+        <p>Está seguro de los valores a ingresar? Por favor confirme</p>
 
         <Button
           className="mt-2 mr-5"
@@ -236,7 +236,7 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
           className="mt-2"
           onClick={() => toast.success("Cambios guardados")}
         >
-          Guardar cambios
+          Confirmar lectura
         </Button>
       </Modal>
     </>
