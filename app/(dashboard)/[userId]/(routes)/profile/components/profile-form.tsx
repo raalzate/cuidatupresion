@@ -129,9 +129,13 @@ export const ProfileForm: React.FC<MedicalFormProps> = ({
 
   const onSubmit = async (data: ProfileFormValues) => {
     try {
+      if (!params?.userId) {
+        return toast.error("ID de usuario no encontrado");
+      }
+
       setLoading(true);
 
-      await axios.patch(`/api/users/${params?.userId ?? ""}`, data);
+      await axios.patch(`/api/users/${params.userId as string}`, data);
 
       router.refresh();
 
