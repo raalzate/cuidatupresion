@@ -73,7 +73,7 @@ export function LoginForm({
           `/api/users?userEmail=${encodeURIComponent(email)}`
         );
 
-        if (user && user.doctorId) {
+        if (user?.doctorId) {
           loginUser(user.id, user.email);
 
           router.push(`/${user.id}/profile`);
@@ -94,8 +94,8 @@ export function LoginForm({
   );
 
   useEffect(() => {
-    if (status === "authenticated" && session.user && session.user.email) {
-      checkUserEmail(session.user.email);
+    if (status === "authenticated" && session?.user?.email) {
+      void checkUserEmail(session.user.email);
     }
   }, [status, session, checkUserEmail]);
 

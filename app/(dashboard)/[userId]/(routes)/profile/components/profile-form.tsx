@@ -131,7 +131,7 @@ export const ProfileForm: React.FC<MedicalFormProps> = ({
     try {
       setLoading(true);
 
-      await axios.patch(`/api/users/${params?.userId}`, data);
+      await axios.patch(`/api/users/${params?.userId ?? ""}`, data);
 
       router.refresh();
 
@@ -488,7 +488,7 @@ export const ProfileForm: React.FC<MedicalFormProps> = ({
             />
           </div>
 
-          <Button className="ml-auto" type="submit">
+          <Button className="ml-auto" disabled={loading} type="submit">
             Guardar cambios
           </Button>
         </form>

@@ -217,7 +217,9 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
       <Modal
         description="Mundo"
         isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={() => {
+          setShowModal(false);
+        }}
         title="Hola"
       >
         <p>Hola</p>
