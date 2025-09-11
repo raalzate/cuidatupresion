@@ -1,9 +1,9 @@
-import dotenv from "dotenv";
+export const PSYS_HIGH = process.env.NEXT_PUBLIC_PSYS_HIGH;
+export const PDYS_HIGH = process.env.NEXT_PUBLIC_PDYS_HIGH;
 
-dotenv.config({ path: ".env.local" });
+export const PSYS_LOW = process.env.NEXT_PUBLIC_PSYS_LOW;
+export const PDYS_LOW = process.env.NEXT_PUBLIC_PDYS_LOW;
 
-export const psyshigh: string | undefined = process.env.PSYS_HIGH;
-export const pdyshigh: string | undefined = process.env.PDYS_HIGH;
-
-export const psys_low: string | undefined = process.env.PSYS_LOW;
-export const pdys_low: string | undefined = process.env.PDYS_LOW;
+export const ADDITIONAL_TAGS = (
+  process.env.NEXT_PUBLIC_ADDITIONAL_TAGS ?? ""
+).split(",");
