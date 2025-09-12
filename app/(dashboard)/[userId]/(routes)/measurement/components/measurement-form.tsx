@@ -176,15 +176,15 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
 
             <FormField
               control={form.control}
-              name="heartRate"
+              name="systolicPressure"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Frecuencia cardíaca</FormLabel>
+                  <FormLabel>Presión sistólica</FormLabel>
 
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Frecuencia cardíaca del usuario"
+                      placeholder="Presión sistólica del usuario"
                       type="number"
                       {...field}
                     />
@@ -197,15 +197,15 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
 
             <FormField
               control={form.control}
-              name="systolicPressure"
+              name="heartRate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Presión sistólica</FormLabel>
+                  <FormLabel>Frecuencia cardíaca</FormLabel>
 
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Presión sistólica del usuario"
+                      placeholder="Frecuencia cardíaca del usuario"
                       type="number"
                       {...field}
                     />
