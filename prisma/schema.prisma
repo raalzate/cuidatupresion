@@ -56,35 +56,35 @@ model PatientMedications {
   @@index([medicationId])
 }
 
-model AlertTags {
+model Tags {
   id String @id @default(uuid())
   name String @unique
-  alertThresholds AlertThresholdTags[]
+  measurements MeasurementTags[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model AlertThresholdTags {
+model MeasurementTags {
   id String @id @default(uuid())
-  alertThresholdId String
-  alertTagId String
-  alertThreshold AlertThresholds @relation(fields: [alertThresholdId], references: [id], onDelete: Cascade)
-  alertTag AlertTags @relation(fields: [alertTagId], references: [id], onDelete: Cascade)
+  measurementId String
+  tagId String
+  measurement Measurements @relation(fields: [measurementId], references: [id], onDelete: Cascade)
+  tag Tags @relation(fields: [tagId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
-  @@unique([alertThresholdId, alertTagId])
-  @@index([alertThresholdId])
-  @@index([alertTagId])
+  @@unique([measurementId, tagId])
+  @@index([measurementId])
+  @@index([tagId])
 }
 
-model AlertThresholds {
+model Measurements {
   id String @id @default(uuid())
   patientId String
   patient Patient @relation(fields: [patientId], references: [id])
   diastolicPressure Int @default(0)
   systolicPressure Int @default(0)
   heartRate Int @default(0)
-  tags AlertThresholdTags[]
+  tags MeasurementTags[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -95,7 +95,7 @@ model Patient {
   id String @id @default(uuid())
   relevantConditions PatientRelevantConditions[]
   medications PatientMedications[]
-  alertThresholds AlertThresholds[]
+  measurements Measurements[]
   doctorId String
   doctor Doctor @relation(fields: [doctorId], references: [id])
   name String
