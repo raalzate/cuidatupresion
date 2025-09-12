@@ -7,6 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import dynamic from "next/dynamic";
 import makeAnimated from "react-select/animated";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +25,7 @@ import { Separator } from "@/components/shared/separator/separator";
 import { ADDITIONAL_TAGS } from "@/config/config";
 import { Modal } from "@/components/shared/modal/modal";
 
-const CreatableSelect = dynamic(() => import("react-select/creatable"), {
+const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
 
@@ -59,15 +61,19 @@ type MedicalFormValues = z.infer<typeof formSchema>;
 
 interface MedicalFormProps {
   initialData: MedicalFormValues;
+  userId: string;
 }
 
 const animatedComponents = makeAnimated();
 
 export const MeasurementForm: React.FC<MedicalFormProps> = ({
   initialData,
+  userId,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [formData, setFormData] = useState<MedicalFormValues | null>(null);
+  const router = useRouter();
 
   const tagsOptions = ADDITIONAL_TAGS.map((tagItem) => ({
     label: tagItem,
@@ -88,8 +94,49 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
         },
   });
 
-  const onSubmit = () => {
+  const onSubmit = (data: MedicalFormValues) => {
+    setFormData(data);
     setShowModal(true);
+  };
+
+  const handleConfirm = async () => {
+    if (!formData) return;
+
+    try {
+      setLoading(true);
+      
+      await axios.post(`/api/users/${userId}/measurement`, {
+        diastolicPressure: formData.diastolicPressure,
+        systolicPressure: formData.systolicPressure,
+        heartRate: formData.heartRate,
+        tags: formData.tags,
+      });
+
+      toast.success("Medición guardada correctamente");
+      setShowModal(false);
+      
+      // Reset form
+      form.reset({
+        diastolicPressure: 0,
+        heartRate: 0,
+        tags: [],
+        systolicPressure: 0,
+      });
+      
+      // Optionally redirect to history page
+      router.push(`/${userId}/history`);
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al guardar la medición");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+    setFormData(null);
+    setLoading(false);
   };
 
   return (
@@ -177,15 +224,20 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
                   <FormLabel>Observaciones adicionales</FormLabel>
 
                   <FormControl>
-                    <CreatableSelect
+                    <Select
                       closeMenuOnSelect={false}
                       components={animatedComponents}
-                      defaultValue={field.value.map((tag: string) => ({
+                      value={field.value.map((tag: string) => ({
                         label: tag,
                         value: tag.replaceAll(" ", "_"),
                       }))}
                       isDisabled={loading}
-                      onChange={() => {}}
+                      onChange={(selectedOptions) => {
+                        const selectedTags = selectedOptions && Array.isArray(selectedOptions)
+                          ? selectedOptions.map((option: { label: string; value: string }) => option.label)
+                          : [];
+                        field.onChange(selectedTags);
+                      }}
                       options={tagsOptions}
                       placeholder="Selecciona las opciones"
                       styles={{
@@ -217,29 +269,35 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
       <Modal
         description="Confirmar lectura de presion"
         isOpen={showModal}
-        onClose={() => {
-          setShowModal(false);
-        }}
-        title="Hola"
+        onClose={handleCancel}
+        title="Confirmar medición"
       >
-        <p>Está seguro de los valores a ingresar? Por favor confirme</p>
+        <p>¿Está seguro de los valores a ingresar? Por favor confirme</p>
+        
+        {formData && (
+          <div className="my-4 p-4 bg-gray-50 rounded-md">
+            <p><strong>Presión sistólica:</strong> {formData.systolicPressure} mmHg</p>
+            <p><strong>Presión diastólica:</strong> {formData.diastolicPressure} mmHg</p>
+            <p><strong>Frecuencia cardíaca:</strong> {formData.heartRate} bpm</p>
+            <p><strong>Observaciones:</strong> {formData.tags.join(", ")}</p>
+          </div>
+        )}
 
-        <Button
-          className="mt-2 mr-5"
-          variant="secondary"
-          onClick={() => {
-            toast.success("Cancelado");
-            setLoading(false);
-          }}
-        >
-          Cancelar
-        </Button>
-        <Button
-          className="mt-2"
-          onClick={() => toast.success("Cambios guardados")}
-        >
-          Confirmar lectura
-        </Button>
+        <div className="flex gap-2 mt-4">
+          <Button
+            variant="secondary"
+            onClick={handleCancel}
+            disabled={loading}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleConfirm}
+            disabled={loading}
+          >
+            {loading ? "Guardando..." : "Confirmar lectura"}
+          </Button>
+        </div>
       </Modal>
     </>
   );
