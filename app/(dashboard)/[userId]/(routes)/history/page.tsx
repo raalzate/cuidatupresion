@@ -1,47 +1,82 @@
-"use client";
+'use client';
 
-import { VerticalTimeline } from "react-vertical-timeline-component";
+import { useEffect, useState } from 'react';
+import { VerticalTimeline } from 'react-vertical-timeline-component';
 
-import { HistoryTimeline } from "./components/history-timeline";
+import { EmptyState } from '@/components/shared/empty-state/empty-state';
+import { apiClient } from '@/services/api';
 
-import "react-vertical-timeline-component/style.min.css";
+import { HistoryTimeline } from './components/history-timeline';
 
-interface HistoryPageProps {
-  params: Promise<{ userId: string }>;
+import 'react-vertical-timeline-component/style.min.css';
+import { useParams } from 'next/navigation';
+
+// Representa una medición tal como llega al cliente (Date -> string)
+interface ClientMeasurement {
+  id: string;
+  systolicPressure: number;
+  diastolicPressure: number;
+  heartRate: number;
+  createdAt: string;
 }
 
-const MEDICAL_INTAKES = [
-  {
-    date: "2025-08-25 13:50",
-    diastolicPressure: 80,
-    heartRate: 70,
-    systolicPressure: 120,
-    tags: ["en reposo", "con mareo"],
-  },
-  {
-    date: "2025-08-24 12:45",
-    diastolicPressure: 80,
-    heartRate: 70,
-    systolicPressure: 120,
-    tags: ["en reposo", "con mareo"],
-  },
-  {
-    date: "2025-08-23 10:38",
-    diastolicPressure: 80,
-    heartRate: 70,
-    systolicPressure: 120,
-    tags: ["en reposo", "con mareo"],
-  },
-];
+// Se definen las props directamente en la firma del componente para evitar conflictos de tipos.
+const HistoryPage = () => {
+  const params = useParams();
+  
+  const [measurements, setMeasurements] = useState<ClientMeasurement[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const HistoryPage: React.FC<HistoryPageProps> = ({ params }) => {
+  useEffect(() => {
+    const fetchMedicalHistory = async () => {
+      try {
+        setLoading(true);
+        const data = await apiClient.get<ClientMeasurement[]>(
+          `/users/${params.userId}/measurements`
+        );
+        setMeasurements(data);
+      } catch (error) {
+        console.error('Error fetching medical history:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (params.userId) {
+      fetchMedicalHistory();
+    }
+  }, [params.userId]);
+
+  if (loading) {
+    return (
+      <div className="flex-1 space-y-4 p-8 pt-6">
+        <p>Cargando historial...</p>
+      </div>
+    );
+  }
+
+  if (measurements.length === 0) {
+    return (
+      <div className="flex-col">
+        <div className="flex-1 space-y-4 p-8 pt-6">
+          <EmptyState
+            title="Aún no tienes un historial que mostrar"
+            subtitle="Empieza por añadir tu primera toma de presión para empezar a construir tu historial."
+            ctaLabel="Añadir mi primera medición"
+            ctaHref={`/${params.userId}/measurement`}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
         <div className="flex flex-col">
-          <VerticalTimeline lineColor="#000000">
-            {MEDICAL_INTAKES.map((medicalIntake, index) => (
-              <HistoryTimeline key={index} medicalIntake={medicalIntake} />
+          <VerticalTimeline lineColor="#e5e7eb">
+            {measurements.map((measurement) => (
+              <HistoryTimeline key={measurement.id} measurement={measurement} />
             ))}
           </VerticalTimeline>
         </div>
@@ -49,4 +84,5 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ params }) => {
     </div>
   );
 };
+
 export default HistoryPage;

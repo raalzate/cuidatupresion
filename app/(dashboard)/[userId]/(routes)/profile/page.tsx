@@ -33,18 +33,6 @@ const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
     throw new Error("Usuario no encontrado");
   }
 
-  const relevantConditions = await prismadb.relevantConditions.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
-
-  const medications = await prismadb.medications.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
-
   const initialData = {
     name: user.name,
     email: user.email,
@@ -53,24 +41,16 @@ const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
     doctorAccessCode: maskValue(user.doctor.accessCode) || "",
     height: user.height || 0,
     weight: user.weight || 0,
-    relevantConditions: user.relevantConditions.map((rc) => ({
-      id: rc.relevantCondition.id,
-      name: rc.relevantCondition.name,
-    })),
-    medications: user.medications.map((m) => ({
-      id: m.medication.id,
-      name: m.medication.name,
-    })),
+    relevantConditions: user.relevantConditions.map(
+      (rc) => rc.relevantCondition.name
+    ),
+    medications: user.medications.map((m) => m.medication.name),
   };
 
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <ProfileForm
-          initialData={initialData}
-          medications={medications}
-          relevantConditions={relevantConditions}
-        />
+        <ProfileForm initialData={initialData} />
       </div>
     </div>
   );
