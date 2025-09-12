@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const nextJest = require("next/jest");
 
 const createJestConfig = nextJest({
@@ -8,16 +9,14 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const customJestConfig = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-  testEnvironment: 'jest-environment-jsdom',
-  transformIgnorePatterns: [
-    "/node_modules/(?!react-markdown)"
-  ],
+  testEnvironment: "jest-environment-jsdom",
+  transformIgnorePatterns: ["/node_modules/(?!react-markdown)"],
   transform: {
-    "^.+\\.[jt]sx?$": "babel-jest"
+    "^.+\\.[jt]sx?$": "babel-jest",
   },
   moduleNameMapper: {
-    "^react-markdown$": "<rootDir>/__mocks__/react-markdown.js"
-  }
+    "^react-markdown$": "<rootDir>/__mocks__/react-markdown.js",
+  },
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

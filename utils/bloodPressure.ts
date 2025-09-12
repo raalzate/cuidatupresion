@@ -1,24 +1,37 @@
-import { psys_low, pdys_low, psyshigh, pdyshigh } from "../config/config";
+import { PSYS_LOW, PDYS_LOW, PSYS_HIGH, PDYS_HIGH } from "../config/config";
 
-export function isHypertensiveCrisis(systolic: number | null | undefined, diastolic: number | null | undefined): boolean {
+export function isHypertensiveCrisis(
+  systolic: number | null | undefined,
+  diastolic: number | null | undefined
+): boolean {
   // Validate inputs
-  if (typeof systolic !== "number" || typeof diastolic !== "number" || isNaN(systolic) || isNaN(diastolic)) {
+  if (
+    typeof systolic !== "number" ||
+    typeof diastolic !== "number" ||
+    isNaN(systolic) ||
+    isNaN(diastolic)
+  ) {
     return false;
   }
 
-  const sysHigh: number = parseInt(psyshigh || "180") || 180;
-  const diasHigh: number = parseInt(pdyshigh || "120") || 120;
+  const sysHigh: number = parseInt(PSYS_HIGH || "180") || 180;
+  const diasHigh: number = parseInt(PDYS_HIGH || "120") || 120;
 
   return systolic >= sysHigh || diastolic >= diasHigh;
 }
 
-export function isHypotensiveCrisis(systolic: number | null | undefined, diastolic: number | null | undefined): boolean {
-  const sysLow: number = parseInt(psys_low || "90") || 90;
-  const diasLow: number = parseInt(pdys_low || "60") || 60;
+export function isHypotensiveCrisis(
+  systolic: number | null | undefined,
+  diastolic: number | null | undefined
+): boolean {
+  const sysLow: number = parseInt(PSYS_LOW || "90") || 90;
+  const diasLow: number = parseInt(PDYS_LOW || "60") || 60;
 
   // Validación segura
-  const validSystolic: boolean = typeof systolic === "number" && !isNaN(systolic);
-  const validDiastolic: boolean = typeof diastolic === "number" && !isNaN(diastolic);
+  const validSystolic: boolean =
+    typeof systolic === "number" && !isNaN(systolic);
+  const validDiastolic: boolean =
+    typeof diastolic === "number" && !isNaN(diastolic);
 
   if (!validSystolic || !validDiastolic) return false;
 

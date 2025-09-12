@@ -3,7 +3,7 @@ interface DashboardPageProps {
 }
 
 const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
-  return <div>Home</div>;
+  return <div>Homeee</div>;
 };
 
 export default DashboardPage;

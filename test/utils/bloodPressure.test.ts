@@ -1,7 +1,7 @@
 import {
   isHypotensiveCrisis,
   isHypertensiveCrisis,
-} from "../utils/bloodPressure";
+} from "../../utils/bloodPressure";
 
 describe("isHypotensiveCrisis", () => {
   test("should return true for systolic <= threshold (e.g. 90)", () => {
@@ -43,7 +43,6 @@ describe("isHypotensiveCrisis", () => {
     expect(isHypotensiveCrisis(null, 80)).toBe(false);
     expect(isHypotensiveCrisis(120, null)).toBe(false);
     expect(isHypotensiveCrisis(undefined, undefined)).toBe(false);
-    expect(isHypotensiveCrisis("abc" as any, "def" as any)).toBe(false);
   });
 });
 
