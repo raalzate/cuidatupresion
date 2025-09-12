@@ -63,7 +63,6 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/react-vertical-timeline-component": "^3.3.6",
     "babel-jest": "^30.0.5",
     "eslint": "^9.34.0",
     "eslint-config-next": "15.5.0",

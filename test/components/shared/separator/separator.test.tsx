@@ -1,8 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { Separator } from "../../../components/shared/separator/separator";
+import { Separator } from "../../../../components/shared/separator/separator";
 
-// Mock Radix UI Separator
 jest.mock("@radix-ui/react-separator", () => {
   const MockRoot = React.forwardRef<
     HTMLDivElement,
@@ -32,8 +31,7 @@ jest.mock("@radix-ui/react-separator", () => {
   };
 });
 
-// Mock utils
-jest.mock("../../../lib/utils", () => ({
+jest.mock("../../../../lib/utils", () => ({
   cn: (...classes: (string | undefined)[]) => classes.filter(Boolean).join(" "),
 }));
 
@@ -47,6 +45,7 @@ describe("Separator", () => {
       render(<Separator />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toBeInTheDocument();
       expect(separator).toHaveAttribute("data-orientation", "horizontal");
       expect(separator).toHaveAttribute("data-decorative", "true");
@@ -57,6 +56,7 @@ describe("Separator", () => {
       render(<Separator />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveClass(
         "shrink-0",
         "bg-border",
@@ -66,7 +66,6 @@ describe("Separator", () => {
     });
 
     it("should have correct display name", () => {
-      // Since we're mocking, we'll test that the component exists and renders
       expect(Separator.displayName).toBeDefined();
     });
   });
@@ -76,6 +75,7 @@ describe("Separator", () => {
       render(<Separator orientation="horizontal" />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveAttribute("data-orientation", "horizontal");
       expect(separator).toHaveAttribute("aria-orientation", "horizontal");
       expect(separator).toHaveClass("h-[1px]", "w-full");
@@ -85,6 +85,7 @@ describe("Separator", () => {
       render(<Separator orientation="vertical" />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveAttribute("data-orientation", "vertical");
       expect(separator).toHaveAttribute("aria-orientation", "vertical");
       expect(separator).toHaveClass("h-full", "w-[1px]");
@@ -94,6 +95,7 @@ describe("Separator", () => {
       render(<Separator />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveAttribute("data-orientation", "horizontal");
       expect(separator).toHaveClass("h-[1px]", "w-full");
     });
@@ -104,6 +106,7 @@ describe("Separator", () => {
       render(<Separator />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveAttribute("data-decorative", "true");
       expect(separator).toHaveAttribute("role", "none");
     });
@@ -112,6 +115,7 @@ describe("Separator", () => {
       render(<Separator decorative={false} />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveAttribute("data-decorative", "false");
       expect(separator).toHaveAttribute("role", "separator");
     });
@@ -120,6 +124,7 @@ describe("Separator", () => {
       render(<Separator decorative={true} />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveAttribute("data-decorative", "true");
       expect(separator).toHaveAttribute("role", "none");
     });
@@ -130,6 +135,7 @@ describe("Separator", () => {
       render(<Separator className="custom-class" />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveClass(
         "shrink-0",
         "bg-border",
@@ -143,6 +149,7 @@ describe("Separator", () => {
       render(<Separator className="custom-1 custom-2" />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveClass(
         "shrink-0",
         "bg-border",
@@ -157,6 +164,7 @@ describe("Separator", () => {
       render(<Separator className="" />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveClass(
         "shrink-0",
         "bg-border",
@@ -169,6 +177,7 @@ describe("Separator", () => {
       render(<Separator className={undefined} />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveClass(
         "shrink-0",
         "bg-border",
@@ -185,6 +194,7 @@ describe("Separator", () => {
       );
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveAttribute("data-orientation", "horizontal");
       expect(separator).toHaveClass(
         "shrink-0",
@@ -199,6 +209,7 @@ describe("Separator", () => {
       render(<Separator orientation="vertical" className="custom-vertical" />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveAttribute("data-orientation", "vertical");
       expect(separator).toHaveClass(
         "shrink-0",
@@ -212,13 +223,14 @@ describe("Separator", () => {
     it("should handle all props together", () => {
       render(
         <Separator
-          orientation="vertical"
-          decorative={false}
           className="all-props-test"
+          decorative={false}
+          orientation="vertical"
         />
       );
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveAttribute("data-orientation", "vertical");
       expect(separator).toHaveAttribute("data-decorative", "false");
       expect(separator).toHaveAttribute("role", "separator");
@@ -243,6 +255,7 @@ describe("Separator", () => {
       );
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveAttribute("data-custom", "test");
       expect(separator).toHaveAttribute("id", "separator-id");
       expect(separator).toHaveAttribute("title", "Separator title");
@@ -253,7 +266,9 @@ describe("Separator", () => {
       render(<Separator onClick={handleClick} />);
 
       const separator = screen.getByTestId("mock-separator");
+
       separator.click();
+
       expect(handleClick).toHaveBeenCalledTimes(1);
     });
 
@@ -262,6 +277,7 @@ describe("Separator", () => {
       render(<Separator style={customStyle} />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveStyle("background-color: rgb(255, 0, 0)");
       expect(separator).toHaveStyle("margin: 10px");
     });
@@ -294,6 +310,7 @@ describe("Separator", () => {
       render(<Separator decorative={true} orientation="horizontal" />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveAttribute("role", "none");
       expect(separator).toHaveAttribute("aria-orientation", "horizontal");
     });
@@ -302,6 +319,7 @@ describe("Separator", () => {
       render(<Separator decorative={false} orientation="vertical" />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveAttribute("role", "separator");
       expect(separator).toHaveAttribute("aria-orientation", "vertical");
     });
@@ -319,6 +337,7 @@ describe("Separator", () => {
       render(<Separator>{null}</Separator>);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toBeInTheDocument();
       expect(separator).toBeEmptyDOMElement();
     });
@@ -333,8 +352,8 @@ describe("Separator", () => {
       render(<Separator {...props} />);
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toBeInTheDocument();
-      // Should fall back to defaults
       expect(separator).toHaveAttribute("data-orientation", "horizontal");
       expect(separator).toHaveAttribute("data-decorative", "true");
     });
@@ -349,6 +368,7 @@ describe("Separator", () => {
       );
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toBeInTheDocument();
       expect(screen.getByText("Content above")).toBeInTheDocument();
       expect(screen.getByText("Content below")).toBeInTheDocument();
@@ -360,7 +380,9 @@ describe("Separator", () => {
       render(
         <div>
           <section data-testid="section-1">Section 1</section>
+
           <Separator orientation="horizontal" />
+
           <section data-testid="section-2">Section 2</section>
         </div>
       );
@@ -379,12 +401,15 @@ describe("Separator", () => {
       render(
         <div style={{ display: "flex" }}>
           <div data-testid="left-panel">Left Panel</div>
+
           <Separator orientation="vertical" />
+
           <div data-testid="right-panel">Right Panel</div>
         </div>
       );
 
       const separator = screen.getByTestId("mock-separator");
+
       expect(separator).toHaveAttribute("data-orientation", "vertical");
       expect(separator).toHaveClass("h-full", "w-[1px]");
     });
@@ -393,14 +418,19 @@ describe("Separator", () => {
       render(
         <div>
           <div>Item 1</div>
+
           <Separator className="separator-1" />
+
           <div>Item 2</div>
+
           <Separator className="separator-2" />
+
           <div>Item 3</div>
         </div>
       );
 
       const separators = screen.getAllByTestId("mock-separator");
+
       expect(separators).toHaveLength(2);
       expect(separators[0]).toHaveClass("separator-1");
       expect(separators[1]).toHaveClass("separator-2");

@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 import { render, screen, fireEvent } from "@testing-library/react";
 import React from "react";
 
-jest.mock("../../../components/ui/dialog", () => ({
+jest.mock("../../../../components/ui/dialog", () => ({
   Dialog: ({
     children,
     open,
@@ -49,7 +49,7 @@ jest.mock("../../../components/ui/dialog", () => ({
   ),
 }));
 
-import { Modal } from "../../../components/shared/modal/modal";
+import { Modal } from "../../../../components/shared/modal/modal";
 
 describe("Modal Component", () => {
   const defaultProps = {

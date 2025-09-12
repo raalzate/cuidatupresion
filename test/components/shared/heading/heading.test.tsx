@@ -3,7 +3,7 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import React from "react";
 
-import { Heading } from "../../../components/shared/heading/heading";
+import { Heading } from "../../../../components/shared/heading/heading";
 
 describe("Heading Component", () => {
   const defaultProps = {

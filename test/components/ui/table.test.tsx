@@ -10,9 +10,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
+} from "../../../components/ui/table";
 
-jest.mock("../../lib/utils", () => ({
+jest.mock("../../../lib/utils", () => ({
   cn: (...classes: (string | undefined)[]) => classes.filter(Boolean).join(" "),
 }));
 

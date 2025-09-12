@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import React from "react";
 
-import { AppSidebar } from "../../../components/shared/sidebar/sidebar";
+import { AppSidebar } from "../../../../components/shared/sidebar/sidebar";
 
 jest.mock("lucide-react", () => ({
   AudioWaveform: ({
@@ -30,7 +30,7 @@ jest.mock("lucide-react", () => ({
   ),
 }));
 
-jest.mock("../../../components/ui/nav-main", () => ({
+jest.mock("../../../../components/ui/nav-main", () => ({
   NavMain: ({
     items,
     ...props
@@ -72,7 +72,7 @@ jest.mock("../../../components/ui/nav-main", () => ({
   ),
 }));
 
-jest.mock("../../../components/ui/nav-user", () => ({
+jest.mock("../../../../components/ui/nav-user", () => ({
   NavUser: ({
     user,
     ...props
@@ -89,7 +89,7 @@ jest.mock("../../../components/ui/nav-user", () => ({
   ),
 }));
 
-jest.mock("../../../components/ui/team-switcher", () => ({
+jest.mock("../../../../components/ui/team-switcher", () => ({
   TeamSwitcher: ({
     teams,
     ...props
@@ -110,7 +110,7 @@ jest.mock("../../../components/ui/team-switcher", () => ({
   ),
 }));
 
-jest.mock("../../../components/ui/sidebar", () => ({
+jest.mock("../../../../components/ui/sidebar", () => ({
   Sidebar: ({
     children,
     collapsible,
