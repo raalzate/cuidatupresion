@@ -38,41 +38,41 @@ export async function POST(
       return new NextResponse("Patient not found", { status: 404 });
     }
 
-    // Create or find alert tags for the selected tags
-    const alertTagsData = await Promise.all(
+    // Create or find tags for the selected tags
+    const tagsData = await Promise.all(
       tags.map(async (tagName: string) => {
-        const alertTag = await prismadb.alertTags.upsert({
+        const tag = await prismadb.tags.upsert({
           where: { name: tagName },
           update: {},
           create: { name: tagName },
         });
-        return alertTag;
+        return tag;
       })
     );
 
-    // Create the alert threshold record with tag relations
-    const alertThreshold = await prismadb.alertThresholds.create({
+    // Create the measurement record with tag relations
+    const measurement = await prismadb.measurements.create({
       data: {
         patientId: userId,
         diastolicPressure: parseInt(diastolicPressure),
         systolicPressure: parseInt(systolicPressure),
         heartRate: parseInt(heartRate),
         tags: {
-          create: alertTagsData.map((tag) => ({
-            alertTagId: tag.id,
+          create: tagsData.map((tag) => ({
+            tagId: tag.id,
           })),
         },
       },
       include: {
         tags: {
           include: {
-            alertTag: true,
+            tag: true,
           },
         },
       },
     });
 
-    return NextResponse.json(alertThreshold);
+    return NextResponse.json(measurement);
   } catch (error) {
     console.log("[MEASUREMENT_POST]", error);
     return new NextResponse("Internal error", { status: 500 });
