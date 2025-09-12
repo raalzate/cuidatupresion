@@ -142,7 +142,7 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading description="Administrar datos médicos" title="Ajustes" />
+        <Heading description="Registra los datos de tu lectura de presión arterial en el siguiente formulario" title="Registrar Lectura de Presión Arterial" />
       </div>
 
       <Separator />
