@@ -25,6 +25,8 @@ import { Separator } from "@/components/shared/separator/separator";
 import { ADDITIONAL_TAGS } from "@/config/config";
 import { Modal } from "@/components/shared/modal/modal";
 
+import { PSYS_MAX, PDYS_MAX, PSYS_MIN, PDYS_MIN, PULSE_MAX, PULSE_MIN } from "@/config/config";
+
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -35,16 +37,16 @@ const formSchema = z.object({
     .pipe(
       z
         .number({ message: "Debe ser un número válido" })
-        .min(40, "La presión diastólica debe ser mayor a 40 mmHg")
-        .max(120, "La presión diastólica debe ser menor a 120 mmHg")
+        .min(PDYS_MIN, `La presión diastólica debe ser mayor a ${PDYS_MIN} mmHg`)
+        .max(PDYS_MAX, `La presión diastólica debe ser menor a ${PDYS_MAX} mmHg`)
     ),
   heartRate: z
     .transform(Number)
     .pipe(
       z
         .number({ message: "Debe ser un número válido" })
-        .min(30, "La frecuencia cardíaca debe ser mayor a 30 bpm")
-        .max(220, "La frecuencia cardíaca debe ser menor a 220 bpm")
+        .min(PULSE_MIN, `La frecuencia cardíaca debe ser mayor a ${PULSE_MIN} lpm`)
+        .max(PULSE_MAX, `La frecuencia cardíaca debe ser menor a ${PULSE_MAX} lpm`)
     ),
   tags: z.string().array().min(1, "Debe seleccionar al menos una observación"),
   systolicPressure: z
@@ -52,8 +54,8 @@ const formSchema = z.object({
     .pipe(
       z
         .number({ message: "Debe ser un número válido" })
-        .min(70, "La presión sistólica debe ser mayor a 70 mmHg")
-        .max(200, "La presión sistólica debe ser menor a 200 mmHg")
+        .min(PSYS_MIN, `La presión sistólica debe ser mayor a ${PSYS_MIN} mmHg`)
+        .max(PSYS_MAX, `La presión sistólica debe ser menor a ${PSYS_MAX} mmHg`)
     ),
 });
 
