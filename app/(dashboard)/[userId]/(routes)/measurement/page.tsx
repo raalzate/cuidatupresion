@@ -1,6 +1,11 @@
+"use client";
+
 import { MeasurementForm } from "./components/measurement-form";
+import { useParams } from "next/navigation";
 
 const MeasurementPage = () => {
+  const params = useParams();
+  const userId = `${params?.userId}`;
   const initialData = {
     diastolicPressure: 0,
     heartRate: 0,
