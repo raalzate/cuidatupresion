@@ -1,11 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import {
+  isHypertensiveCrisis,
+  isHypotensiveCrisis,
+} from "@/utils/bloodPressure";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
 
 export type MeasurementColumns = {
-  date: Date;
+  date: string;
   diastolicPressure: number;
   heartRate: number;
   systolicPressure: number;
@@ -20,10 +22,40 @@ export const columns: ColumnDef<MeasurementColumns>[] = [
   {
     accessorKey: "systolicPressure",
     header: "Presión Sistólica (mmHg)",
+    cell: ({ row }) =>
+      isHypertensiveCrisis(
+        row.original.systolicPressure,
+        row.original.diastolicPressure
+      ) ||
+      isHypotensiveCrisis(
+        row.original.systolicPressure,
+        row.original.diastolicPressure
+      ) ? (
+        <span className="text-red-500 font-bold">
+          {row.original.systolicPressure}
+        </span>
+      ) : (
+        row.original.systolicPressure
+      ),
   },
   {
     accessorKey: "diastolicPressure",
     header: "Presión Diastólica (mmHg)",
+    cell: ({ row }) =>
+      isHypertensiveCrisis(
+        row.original.systolicPressure,
+        row.original.diastolicPressure
+      ) ||
+      isHypotensiveCrisis(
+        row.original.systolicPressure,
+        row.original.diastolicPressure
+      ) ? (
+        <span className="text-red-500 font-bold">
+          {row.original.diastolicPressure}
+        </span>
+      ) : (
+        row.original.diastolicPressure
+      ),
   },
   {
     accessorKey: "tags",
@@ -31,16 +63,6 @@ export const columns: ColumnDef<MeasurementColumns>[] = [
   },
   {
     accessorKey: "date",
-    header: ({ column }) => {
-      return (
-        <Button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          variant="ghost"
-        >
-          Fecha
-          <ArrowUpDown />
-        </Button>
-      );
-    },
+    header: "Fecha",
   },
 ];

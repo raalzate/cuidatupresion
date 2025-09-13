@@ -1,5 +1,6 @@
 "use client";
 
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
@@ -47,7 +48,7 @@ const HistoryPage = () => {
       systolicPressure: measurement.systolicPressure,
       diastolicPressure: measurement.diastolicPressure,
       tags: measurement.tags.map((tag) => tag.tag.name).join(", "),
-      date: measurement.createdAt,
+      date: format(measurement.createdAt, "dd/MM/yyyy HH:mm"),
     })
   );
 
@@ -64,10 +65,10 @@ const HistoryPage = () => {
       <div className="flex-col">
         <div className="flex-1 space-y-4 p-8 pt-6">
           <EmptyState
-            title="Aún no tienes un historial que mostrar"
-            subtitle="Empieza por añadir tu primera toma de presión para empezar a construir tu historial."
-            ctaLabel="Añadir mi primera medición"
             ctaHref={`/${userId}/measurement`}
+            ctaLabel="Añadir mi primera medición"
+            subtitle="Empieza por añadir tu primera toma de presión para empezar a construir tu historial."
+            title="Aún no tienes un historial que mostrar"
           />
         </div>
       </div>
