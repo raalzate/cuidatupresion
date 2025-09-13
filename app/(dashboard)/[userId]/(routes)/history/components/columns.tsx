@@ -26,12 +26,15 @@ export const columns: ColumnDef<MeasurementColumns>[] = [
       isHypertensiveCrisis(
         row.original.systolicPressure,
         row.original.diastolicPressure
-      ) ||
-      isHypotensiveCrisis(
-        row.original.systolicPressure,
-        row.original.diastolicPressure
       ) ? (
         <span className="text-red-500 font-bold">
+          {row.original.systolicPressure}
+        </span>
+      ) : isHypotensiveCrisis(
+          row.original.systolicPressure,
+          row.original.diastolicPressure
+        ) ? (
+        <span className="text-blue-700 font-bold">
           {row.original.systolicPressure}
         </span>
       ) : (
@@ -45,16 +48,19 @@ export const columns: ColumnDef<MeasurementColumns>[] = [
       isHypertensiveCrisis(
         row.original.systolicPressure,
         row.original.diastolicPressure
-      ) ||
-      isHypotensiveCrisis(
-        row.original.systolicPressure,
-        row.original.diastolicPressure
       ) ? (
         <span className="text-red-500 font-bold">
           {row.original.diastolicPressure}
         </span>
+      ) : isHypotensiveCrisis(
+          row.original.systolicPressure,
+          row.original.diastolicPressure
+        ) ? (
+        <span className="text-blue-700 font-bold">
+          {row.original.diastolicPressure}
+        </span>
       ) : (
-        row.original.diastolicPressure
+        row.original.systolicPressure
       ),
   },
   {
