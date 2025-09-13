@@ -1,20 +1,22 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import prismadb from '@/lib/prismadb';
 
 export async function GET(
-  req: Request,
-  { params }: { params: { userId: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
-    if (!params.userId) {
+    const { userId } = await params; 
+
+    if (userId) {
       return new NextResponse('User ID is required', { status: 400 });
     }
 
     // Corregido: de measurements a measurement
     const measurements = await prismadb.measurements.findMany({
       where: {
-        patientId: params.userId,
+        patientId: userId,
       },
       orderBy: {
         createdAt: 'desc',
@@ -29,11 +31,13 @@ export async function GET(
 }
 
 export async function POST(
-  req: Request,
-  { params }: { params: { userId: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
-    if (!params.userId) {
+    const { userId } = await params; 
+
+    if (!userId) {
       return new NextResponse('User ID is required', { status: 400 });
     }
 
@@ -57,7 +61,7 @@ export async function POST(
         systolicPressure,
         diastolicPressure,
         heartRate,
-        patientId: params.userId,
+        patientId:userId,
       },
     });
 

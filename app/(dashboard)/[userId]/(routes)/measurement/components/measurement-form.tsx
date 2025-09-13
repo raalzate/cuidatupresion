@@ -23,49 +23,52 @@ import { Separator } from '@/components/shared/separator/separator';
 
 const formSchema = z.object({
   systolicPressure: z.coerce
-    .number({
-      invalid_type_error: 'La presión sistólica debe ser un número válido.',
-    })
-    .min(1, 'La presión sistólica es requerida.')
+    .number()
     .min(70, 'La presión sistólica debe ser mayor a 70 mmHg')
     .max(200, 'La presión sistólica debe ser menor a 200 mmHg'),
   diastolicPressure: z.coerce
-    .number({
-      invalid_type_error: 'La presión diastólica debe ser un número válido.',
-    })
-    .min(1, 'La presión diastólica es requerida.')
+    .number()
     .min(40, 'La presión diastólica debe ser mayor a 40 mmHg')
     .max(120, 'La presión diastólica debe ser menor a 120 mmHg'),
   heartRate: z.coerce
-    .number({ invalid_type_error: 'La frecuencia cardíaca debe ser un número válido.' })
-    .min(1, 'La frecuencia cardíaca es requerida.')
+    .number()
     .min(30, 'La frecuencia cardíaca debe ser mayor a 30 bpm')
     .max(220, 'La frecuencia cardíaca debe ser menor a 220 bpm'),
 });
 
-type MeasurementFormValues = z.infer<typeof formSchema>;
+type MeasurementFormValues = {
+  systolicPressure: number;
+  diastolicPressure: number;
+  heartRate: number;
+};
 
 export const MeasurementForm: React.FC = () => {
   const params = useParams();
+  const userId = params?.userId;
   const router = useRouter();
 
   const [loading, setLoading] = useState<boolean>(false);
 
   const form = useForm<MeasurementFormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {},
+    resolver: zodResolver(formSchema) as any,
+    defaultValues: {
+      systolicPressure: 0,
+      diastolicPressure: 0,
+      heartRate: 0,
+    },
   });
+
 
   const onSubmit = async (data: MeasurementFormValues) => {
     const toastId = toast.loading('Guardando medición...');
     try {
       setLoading(true);
       // Endpoint corregido a /measurements
-      await apiClient.post(`/users/${params.userId}/measurements`, data);
+      await apiClient.post(`/users/${userId}/measurements`, data);
 
       toast.success('Medición guardada con éxito', { id: toastId });
       router.refresh();
-      router.push(`/${params.userId}/history`);
+      router.push(`/${userId}/history`);
     } catch (error) {
       console.error('Error saving measurement:', error);
       toast.error('No se pudo guardar la medición.', { id: toastId });

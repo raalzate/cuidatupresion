@@ -23,7 +23,8 @@ interface ClientMeasurement {
 // Se definen las props directamente en la firma del componente para evitar conflictos de tipos.
 const HistoryPage = () => {
   const params = useParams();
-  
+  const userId = params?.userId;
+
   const [measurements, setMeasurements] = useState<ClientMeasurement[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +33,7 @@ const HistoryPage = () => {
       try {
         setLoading(true);
         const data = await apiClient.get<ClientMeasurement[]>(
-          `/users/${params.userId}/measurements`
+          `/users/${userId}/measurements`
         );
         setMeasurements(data);
       } catch (error) {
@@ -42,10 +43,10 @@ const HistoryPage = () => {
       }
     };
 
-    if (params.userId) {
+    if (userId) {
       fetchMedicalHistory();
     }
-  }, [params.userId]);
+  }, [userId]);
 
   if (loading) {
     return (
@@ -63,7 +64,7 @@ const HistoryPage = () => {
             title="Aún no tienes un historial que mostrar"
             subtitle="Empieza por añadir tu primera toma de presión para empezar a construir tu historial."
             ctaLabel="Añadir mi primera medición"
-            ctaHref={`/${params.userId}/measurement`}
+            ctaHref={`/${userId}/measurement`}
           />
         </div>
       </div>

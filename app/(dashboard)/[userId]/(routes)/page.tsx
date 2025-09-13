@@ -1,24 +1,37 @@
-import prismadb from "@/lib/prismadb";
+'use client';
 
-import { DashboardClient } from "./components/dashboard-client";
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 
-const DashboardPage = async ({ params }: { params: { userId: string } }) => {
-  const { userId } = params;
+import { DashboardClient } from './components/dashboard-client';
+import { Patient } from '@prisma/client';
+import { apiClient } from '@/services/api';
 
-  // Se obtiene la información del paciente en el servidor para una carga inicial rápida.
-  const patient = await prismadb.patient.findUnique({
-    where: {
-      id: userId,
-    },
-  });
+const DashboardPage = () => {
+  const params = useParams();
+  const userId = params?.userId;
+  const [patient, setPatient] = useState<Patient | null>(null);
 
-  // Se maneja el caso de que el paciente no se encuentre.
+  useEffect(() => {
+    const fetchPatient = async () => {
+      try {
+       const patient = await apiClient.get<Patient>(`/users/${userId}`); 
+        setPatient(patient);
+      } catch (error) {
+        console.error('Error fetching patient data:', error);
+        // Manejar el error, por ejemplo, mostrando un mensaje al usuario
+      }
+    };
+
+    if (userId) {
+      fetchPatient();
+    }
+  }, [userId]);
+
   if (!patient) {
-    return <div>Paciente no encontrado</div>;
+    return <div>Cargando...</div>; 
   }
 
-  // Se renderiza el Componente de Cliente, que se encargará de obtener
-  // y mostrar los datos dinámicos (mediciones) utilizando apiClient.
   return <DashboardClient patient={patient} />;
 };
 
