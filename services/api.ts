@@ -1,4 +1,3 @@
-
 import { getSession } from "next-auth/react";
 
 class ApiClient {
@@ -15,7 +14,7 @@ class ApiClient {
 
     if (includeAuth) {
       const session = await getSession();
-    /*  if (session?.accessToken) {
+      /*  if (session?.accessToken) {
         headers["Authorization"] = `Bearer ${session.accessToken}`;
       }*/
     }
@@ -37,7 +36,7 @@ class ApiClient {
     return response.json();
   }
 
-  async post<T>(endpoint: string, body: any, includeAuth = true): Promise<T> {
+  async post<T>(endpoint: string, body: T, includeAuth = true): Promise<T> {
     const headers = await this.getHeaders(includeAuth);
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: "POST",
@@ -52,10 +51,10 @@ class ApiClient {
     return response.json();
   }
 
-  async put<T>(endpoint: string, body: any, includeAuth = true): Promise<T> {
+  async patch<T>(endpoint: string, body: T, includeAuth = true): Promise<T> {
     const headers = await this.getHeaders(includeAuth);
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      method: "PUT",
+      method: "PATCH",
       headers,
       body: JSON.stringify(body),
     });
