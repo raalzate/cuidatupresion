@@ -9,11 +9,10 @@ export async function GET(
   try {
     const { userId } = await params;
 
-    if (userId) {
+    if (!userId) {
       return new NextResponse("User ID is required", { status: 400 });
     }
 
-    // Corregido: de measurements a measurement
     const measurements = await prismadb.measurements.findMany({
       where: {
         patientId: userId,
