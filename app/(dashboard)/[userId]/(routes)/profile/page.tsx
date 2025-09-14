@@ -6,7 +6,6 @@ import { useParams } from "next/navigation";
 
 import { apiClient } from "@/services/api";
 import { EmptyState } from "@/components/shared/empty-state/empty-state";
-import { maskValue } from "@/utils/mask-value";
 import { ProfileForm } from "./components/profile-form";
 
 import {
@@ -98,7 +97,7 @@ const SettingsPage = () => {
         : patient.birthdate
       : new Date(),
     gender: patient?.gender ?? "",
-    doctorAccessCode: maskValue(patient?.doctor?.accessCode ?? ""),
+    doctorAccessCode: patient?.doctor?.accessCode ?? "",
     height: patient?.height ?? 0,
     weight: patient?.weight ?? 0,
     relevantConditions:

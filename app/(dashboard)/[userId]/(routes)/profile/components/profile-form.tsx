@@ -9,10 +9,10 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import axios from "axios";
 import dynamic from "next/dynamic";
 import makeAnimated from "react-select/animated";
 
+import { apiClient } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -135,7 +135,7 @@ export const ProfileForm: React.FC<MedicalFormProps> = ({
 
       setLoading(true);
 
-      await axios.patch(`/api/users/${params.userId as string}`, data);
+      await apiClient.patch(`/users/${params.userId as string}`, data);
 
       router.refresh();
 

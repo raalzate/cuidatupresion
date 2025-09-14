@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { maskValue } from "@/utils/mask-value";
+
 import prismadb from "@/lib/prismadb";
 
 export async function GET(
@@ -39,6 +41,8 @@ export async function GET(
         status: 404,
       });
     }
+
+    user.doctor.accessCode = maskValue(user.doctor.accessCode);
 
     return NextResponse.json(user);
   } catch (error) {
