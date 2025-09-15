@@ -60,7 +60,7 @@ export const columns: ColumnDef<MeasurementColumns>[] = [
           {row.original.diastolicPressure}
         </span>
       ) : (
-        row.original.systolicPressure
+        row.original.diastolicPressure
       ),
   },
   {
