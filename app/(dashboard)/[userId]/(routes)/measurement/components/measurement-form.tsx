@@ -7,9 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import dynamic from "next/dynamic";
 import makeAnimated from "react-select/animated";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
+import { apiClient } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -107,7 +107,7 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
     try {
       setLoading(true);
       
-      await axios.post(`/api/users/${userId}/measurement`, {
+      await apiClient.post(`/users/${userId}/measurement`, {
         diastolicPressure: formData.diastolicPressure,
         systolicPressure: formData.systolicPressure,
         heartRate: formData.heartRate,
