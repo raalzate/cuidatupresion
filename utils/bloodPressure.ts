@@ -14,8 +14,8 @@ export function isHypertensiveCrisis(
     return false;
   }
 
-  const sysHigh: number = parseInt(PSYS_HIGH || "180") || 180;
-  const diasHigh: number = parseInt(PDYS_HIGH || "120") || 120;
+  const sysHigh: number = PSYS_HIGH || 180;
+  const diasHigh: number = PDYS_HIGH || 120;
 
   return systolic >= sysHigh || diastolic >= diasHigh;
 }
@@ -24,8 +24,8 @@ export function isHypotensiveCrisis(
   systolic: number | null | undefined,
   diastolic: number | null | undefined
 ): boolean {
-  const sysLow: number = parseInt(PSYS_LOW || "90") || 90;
-  const diasLow: number = parseInt(PDYS_LOW || "60") || 60;
+  const sysLow: number = PSYS_LOW || 90;
+  const diasLow: number = PDYS_LOW || 60;
 
   // Validación segura
   const validSystolic: boolean =
