@@ -1,5 +1,5 @@
 export const PSYS_HIGH = Number(process.env.NEXT_PUBLIC_PSYS_HIGH) || 180;
-export const PDYS_HIGH = Number(process.env.NEXT_PUBLIC_PDYS_HIGH) || 110;
+export const PDYS_HIGH = Number(process.env.NEXT_PUBLIC_PDYS_HIGH) || 120;
 
 export const PSYS_LOW = Number(process.env.NEXT_PUBLIC_PSYS_LOW) || 90;
 export const PDYS_LOW = Number(process.env.NEXT_PUBLIC_PDYS_LOW) || 60;
