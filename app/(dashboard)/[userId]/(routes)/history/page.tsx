@@ -1,52 +1,87 @@
 "use client";
 
-import { VerticalTimeline } from "react-vertical-timeline-component";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
-import { HistoryTimeline } from "./components/history-timeline";
+import { apiClient } from "@/services/api";
+import { EmptyState } from "@/components/shared/empty-state/empty-state";
+import { MeasurementClient } from "./components/client";
+import { MeasurementColumns } from "./components/columns";
+import { Measurements, MeasurementTags, Tags } from "@prisma/client";
 
-import "react-vertical-timeline-component/style.min.css";
+type MeasurementTagsProps = { tag: Tags } & MeasurementTags;
+type MeasurementResponse = Measurements & { tags: MeasurementTagsProps[] };
 
-interface HistoryPageProps {
-  params: Promise<{ userId: string }>;
-}
+const HistoryPage = () => {
+  const params = useParams();
+  const userId = params?.userId;
 
-const MEDICAL_INTAKES = [
-  {
-    date: "2025-08-25 13:50",
-    diastolicPressure: 80,
-    heartRate: 70,
-    systolicPressure: 120,
-    tags: ["en reposo", "con mareo"],
-  },
-  {
-    date: "2025-08-24 12:45",
-    diastolicPressure: 80,
-    heartRate: 70,
-    systolicPressure: 120,
-    tags: ["en reposo", "con mareo"],
-  },
-  {
-    date: "2025-08-23 10:38",
-    diastolicPressure: 80,
-    heartRate: 70,
-    systolicPressure: 120,
-    tags: ["en reposo", "con mareo"],
-  },
-];
+  const [measurements, setMeasurements] = useState<MeasurementResponse[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const HistoryPage: React.FC<HistoryPageProps> = ({ params }) => {
+  useEffect(() => {
+    const fetchMedicalHistory = async () => {
+      try {
+        setLoading(true);
+
+        const data = await apiClient.get<MeasurementResponse[]>(
+          `/users/${userId}/measurements`
+        );
+
+        setMeasurements(data);
+      } catch (error) {
+        console.error("Error fetching medical history:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchMedicalHistory();
+    }
+  }, [userId]);
+
+  const formattedMeasurements: MeasurementColumns[] = measurements.map(
+    (measurement) => ({
+      heartRate: measurement.heartRate,
+      systolicPressure: measurement.systolicPressure,
+      diastolicPressure: measurement.diastolicPressure,
+      tags: measurement.tags.map((tag) => tag.tag.name).join(", "),
+      date: format(measurement.createdAt, "dd/MM/yyyy HH:mm"),
+    })
+  );
+
+  if (loading) {
+    return (
+      <div className="flex-1 space-y-4 p-8 pt-6">
+        <p>Cargando historial...</p>
+      </div>
+    );
+  }
+
+  if (measurements.length === 0) {
+    return (
+      <div className="flex-col">
+        <div className="flex-1 space-y-4 p-8 pt-6">
+          <EmptyState
+            ctaHref={`/${userId}/measurement`}
+            ctaLabel="Añadir mi primera medición"
+            subtitle="Empieza por añadir tu primera toma de presión para empezar a construir tu historial."
+            title="Aún no tienes un historial que mostrar"
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <div className="flex flex-col">
-          <VerticalTimeline lineColor="#000000">
-            {MEDICAL_INTAKES.map((medicalIntake, index) => (
-              <HistoryTimeline key={index} medicalIntake={medicalIntake} />
-            ))}
-          </VerticalTimeline>
-        </div>
+        <MeasurementClient data={formattedMeasurements} />
       </div>
     </div>
   );
 };
+
 export default HistoryPage;

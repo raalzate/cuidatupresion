@@ -7,7 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import dynamic from "next/dynamic";
 import makeAnimated from "react-select/animated";
+import { useRouter } from "next/navigation";
 
+import { apiClient } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,7 +25,9 @@ import { Separator } from "@/components/shared/separator/separator";
 import { ADDITIONAL_TAGS } from "@/config/config";
 import { Modal } from "@/components/shared/modal/modal";
 
-const CreatableSelect = dynamic(() => import("react-select/creatable"), {
+import { PSYS_MAX, PDYS_MAX, PSYS_MIN, PDYS_MIN, PULSE_MAX, PULSE_MIN } from "@/config/config";
+
+const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
 
@@ -33,16 +37,16 @@ const formSchema = z.object({
     .pipe(
       z
         .number({ message: "Debe ser un número válido" })
-        .min(40, "La presión diastólica debe ser mayor a 40 mmHg")
-        .max(120, "La presión diastólica debe ser menor a 120 mmHg")
+        .min(PDYS_MIN, `La presión diastólica debe ser mayor a ${PDYS_MIN} mmHg`)
+        .max(PDYS_MAX, `La presión diastólica debe ser menor a ${PDYS_MAX} mmHg`)
     ),
   heartRate: z
     .transform(Number)
     .pipe(
       z
         .number({ message: "Debe ser un número válido" })
-        .min(30, "La frecuencia cardíaca debe ser mayor a 30 bpm")
-        .max(220, "La frecuencia cardíaca debe ser menor a 220 bpm")
+        .min(PULSE_MIN, `La frecuencia cardíaca debe ser mayor a ${PULSE_MIN} lpm`)
+        .max(PULSE_MAX, `La frecuencia cardíaca debe ser menor a ${PULSE_MAX} lpm`)
     ),
   tags: z.string().array().min(1, "Debe seleccionar al menos una observación"),
   systolicPressure: z
@@ -50,8 +54,8 @@ const formSchema = z.object({
     .pipe(
       z
         .number({ message: "Debe ser un número válido" })
-        .min(70, "La presión sistólica debe ser mayor a 70 mmHg")
-        .max(200, "La presión sistólica debe ser menor a 200 mmHg")
+        .min(PSYS_MIN, `La presión sistólica debe ser mayor a ${PSYS_MIN} mmHg`)
+        .max(PSYS_MAX, `La presión sistólica debe ser menor a ${PSYS_MAX} mmHg`)
     ),
 });
 
@@ -59,15 +63,19 @@ type MedicalFormValues = z.infer<typeof formSchema>;
 
 interface MedicalFormProps {
   initialData: MedicalFormValues;
+  userId: string;
 }
 
 const animatedComponents = makeAnimated();
 
 export const MeasurementForm: React.FC<MedicalFormProps> = ({
   initialData,
+  userId,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [formData, setFormData] = useState<MedicalFormValues | null>(null);
+  const router = useRouter();
 
   const tagsOptions = ADDITIONAL_TAGS.map((tagItem) => ({
     label: tagItem,
@@ -88,14 +96,55 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
         },
   });
 
-  const onSubmit = () => {
+  const onSubmit = (data: MedicalFormValues) => {
+    setFormData(data);
     setShowModal(true);
+  };
+
+  const handleConfirm = async () => {
+    if (!formData) return;
+
+    try {
+      setLoading(true);
+      
+      await apiClient.post(`/users/${userId}/measurement`, {
+        diastolicPressure: formData.diastolicPressure,
+        systolicPressure: formData.systolicPressure,
+        heartRate: formData.heartRate,
+        tags: formData.tags,
+      });
+
+      toast.success("Medición guardada correctamente");
+      setShowModal(false);
+      
+      // Reset form
+      form.reset({
+        diastolicPressure: 0,
+        heartRate: 0,
+        tags: [],
+        systolicPressure: 0,
+      });
+      
+      // Optionally redirect to history page
+      router.push(`/${userId}/history`);
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al guardar la medición");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+    setFormData(null);
+    setLoading(false);
   };
 
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading description="Administrar datos médicos" title="Ajustes" />
+        <Heading description="Registra los datos de tu lectura de presión arterial en el siguiente formulario" title="Registrar Lectura de Presión Arterial" />
       </div>
 
       <Separator />
@@ -129,27 +178,6 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
 
             <FormField
               control={form.control}
-              name="heartRate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Frecuencia cardíaca</FormLabel>
-
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Frecuencia cardíaca del usuario"
-                      type="number"
-                      {...field}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
               name="systolicPressure"
               render={({ field }) => (
                 <FormItem>
@@ -171,21 +199,47 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
 
             <FormField
               control={form.control}
+              name="heartRate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Frecuencia cardíaca</FormLabel>
+
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Frecuencia cardíaca del usuario"
+                      type="number"
+                      {...field}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="tags"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Observaciones adicionales</FormLabel>
 
                   <FormControl>
-                    <CreatableSelect
+                    <Select
                       closeMenuOnSelect={false}
                       components={animatedComponents}
-                      defaultValue={field.value.map((tag: string) => ({
+                      value={field.value.map((tag: string) => ({
                         label: tag,
                         value: tag.replaceAll(" ", "_"),
                       }))}
                       isDisabled={loading}
-                      onChange={() => {}}
+                      onChange={(selectedOptions) => {
+                        const selectedTags = selectedOptions && Array.isArray(selectedOptions)
+                          ? selectedOptions.map((option: { label: string; value: string }) => option.label)
+                          : [];
+                        field.onChange(selectedTags);
+                      }}
                       options={tagsOptions}
                       placeholder="Selecciona las opciones"
                       styles={{
@@ -215,31 +269,37 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
       </Form>
 
       <Modal
-        description="Mundo"
+        description="Confirmar lectura de presion"
         isOpen={showModal}
-        onClose={() => {
-          setShowModal(false);
-        }}
-        title="Hola"
+        onClose={handleCancel}
+        title="Confirmar medición"
       >
-        <p>Hola</p>
+        <p>¿Está seguro de los valores a ingresar? Por favor confirme</p>
+        
+        {formData && (
+          <div className="my-4 p-4 bg-gray-50 rounded-md">
+            <p><strong>Presión sistólica:</strong> {formData.systolicPressure} mmHg</p>
+            <p><strong>Presión diastólica:</strong> {formData.diastolicPressure} mmHg</p>
+            <p><strong>Frecuencia cardíaca:</strong> {formData.heartRate} bpm</p>
+            <p><strong>Observaciones:</strong> {formData.tags.join(", ")}</p>
+          </div>
+        )}
 
-        <Button
-          className="mt-2 mr-5"
-          variant="secondary"
-          onClick={() => {
-            toast.success("Cancelado");
-            setLoading(false);
-          }}
-        >
-          Cancelar
-        </Button>
-        <Button
-          className="mt-2"
-          onClick={() => toast.success("Cambios guardados")}
-        >
-          Guardar cambios
-        </Button>
+        <div className="flex gap-2 mt-4">
+          <Button
+            variant="secondary"
+            onClick={handleCancel}
+            disabled={loading}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleConfirm}
+            disabled={loading}
+          >
+            {loading ? "Guardando..." : "Confirmar lectura"}
+          </Button>
+        </div>
       </Modal>
     </>
   );

@@ -1,5 +1,56 @@
-import prismadb from "@/lib/prismadb";
 import { NextResponse } from "next/server";
+
+import { maskValue } from "@/utils/mask-value";
+
+import prismadb from "@/lib/prismadb";
+
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ userId: string }> }
+) {
+  try {
+    const { userId } = await params;
+
+    if (!userId) {
+      return new NextResponse("El id del usuario es obligatorio", {
+        status: 400,
+      });
+    }
+
+    const user = await prismadb.patient.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        relevantConditions: {
+          include: {
+            relevantCondition: true,
+          },
+        },
+        medications: {
+          include: {
+            medication: true,
+          },
+        },
+        doctor: true,
+      },
+    });
+
+    if (!user) {
+      return new NextResponse("Usuario no encontrado", {
+        status: 404,
+      });
+    }
+
+    user.doctor.accessCode = maskValue(user.doctor.accessCode);
+
+    return NextResponse.json(user);
+  } catch (error) {
+    console.log("[USER_GET]", error);
+
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}
 
 export async function PATCH(
   req: Request,

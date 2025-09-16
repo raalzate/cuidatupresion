@@ -1,10 +1,11 @@
+"use client";
+
 import { MeasurementForm } from "./components/measurement-form";
+import { useParams } from "next/navigation";
 
-interface MeasurementPageProps {
-  params: Promise<{ userId: string }>;
-}
-
-const MeasurementPage: React.FC<MeasurementPageProps> = ({ params }) => {
+const MeasurementPage = () => {
+  const params = useParams();
+  const userId = `${params?.userId}`;
   const initialData = {
     diastolicPressure: 0,
     heartRate: 0,
@@ -15,7 +16,7 @@ const MeasurementPage: React.FC<MeasurementPageProps> = ({ params }) => {
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <MeasurementForm initialData={initialData} />
+        <MeasurementForm initialData={initialData} userId={userId} />
       </div>
     </div>
   );
