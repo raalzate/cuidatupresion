@@ -8,67 +8,108 @@ import { apiClient } from "@/services/api";
 import { EmptyState } from "@/components/shared/empty-state/empty-state";
 import { ProfileForm } from "./components/profile-form";
 
-import prismadb from "@/lib/prismadb";
+import {
+  Doctor,
+  Medications,
+  Patient,
+  PatientMedications,
+  PatientRelevantConditions,
+  RelevantConditions,
+} from "@prisma/client";
 
-interface SettingsPageProps {
-  params: Promise<{ userId: string }>;
-}
+type PatientResponse = Patient & {
+  doctor: Doctor;
+  relevantConditions: (PatientRelevantConditions & {
+    relevantCondition: RelevantConditions;
+  })[];
+  medications: (PatientMedications & { medication: Medications })[];
+};
 
-const SettingsPage: React.FC<SettingsPageProps> = ({ params }) => {
-const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
-  const { userId } = await params;
+const SettingsPage = () => {
+  const params = useParams();
+  const userId = params?.userId;
 
-  const user = await prismadb.patient.findUnique({
-    where: {
-      id: userId,
-    },
-    include: {
-      relevantConditions: {
-        include: {
-          relevantCondition: true,
-        },
-      },
-      medications: {
-        include: {
-          medication: true,
-        },
-      },
-      doctor: true,
-    },
-  });
+  const [loading, setLoading] = useState<boolean>(true);
+  const [patient, setPatient] = useState<PatientResponse | null>(null);
+  const [medications, setMedications] = useState<Medications[]>([]);
+  const [relevantConditions, setRelevantConditions] = useState<
+    RelevantConditions[]
+  >([]);
 
-  if (!user) {
-    throw new Error("Usuario no encontrado");
-  }
+  useEffect(() => {
+    const fetchRelevantConditions = async () => {
+      try {
+        setLoading(true);
 
-  const relevantConditions = await prismadb.relevantConditions.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
+        const data = await apiClient.get<RelevantConditions[]>(
+          "/relevant-conditions"
+        );
 
-  const medications = await prismadb.medications.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
+        setRelevantConditions(data);
+      } catch (error) {
+        toast.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchMedications = async () => {
+      try {
+        setLoading(true);
+
+        const data = await apiClient.get<Medications[]>("/medications");
+
+        setMedications(data);
+      } catch (error) {
+        toast.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchMedicalHistory = async () => {
+      try {
+        setLoading(true);
+
+        const data = await apiClient.get<PatientResponse>(`/users/${userId}`);
+
+        setPatient(data);
+      } catch (error) {
+        toast.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchMedicalHistory();
+      fetchRelevantConditions();
+      fetchMedications();
+    }
+  }, [userId]);
 
   const initialData = {
-    name: user.name,
-    email: user.email,
-    birthdate: user.birthdate || new Date(),
-    gender: user.gender || "",
-    doctorAccessCode: maskValue(user.doctor.accessCode) || "",
-    height: user.height || 0,
-    weight: user.weight || 0,
-    relevantConditions: user.relevantConditions.map((rc) => ({
-      id: rc.relevantCondition.id,
-      name: rc.relevantCondition.name,
-    })),
-    medications: user.medications.map((m) => ({
-      id: m.medication.id,
-      name: m.medication.name,
-    })),
+    name: patient?.name ?? "",
+    email: patient?.email ?? "",
+    birthdate: patient?.birthdate
+      ? typeof patient.birthdate === "string"
+        ? new Date(patient.birthdate)
+        : patient.birthdate
+      : new Date(),
+    gender: patient?.gender ?? "",
+    doctorAccessCode: patient?.doctor?.accessCode ?? "",
+    height: patient?.height ?? 0,
+    weight: patient?.weight ?? 0,
+    relevantConditions:
+      patient?.relevantConditions?.map((rc) => ({
+        id: rc.relevantCondition.id,
+        name: rc.relevantCondition.name,
+      })) ?? [],
+    medications:
+      patient?.medications?.map((m) => ({
+        id: m.medication.id,
+        name: m.medication.name,
+      })) ?? [],
   };
 
   if (loading || Object.keys(patient ?? {}).length === 0) {
@@ -91,8 +132,8 @@ const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
       <div className="flex-1 space-y-4 p-8 pt-6">
         <ProfileForm
           initialData={initialData}
-          medications={medications}
           relevantConditions={relevantConditions}
+          medications={medications}
         />
       </div>
     </div>
