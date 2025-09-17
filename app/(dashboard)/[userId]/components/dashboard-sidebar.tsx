@@ -1,7 +1,8 @@
 "use client";
 
+import { useAuthStore } from "@/stores/auth/auth.store";
 import { AppSidebar } from "../../../../components/shared/sidebar/sidebar";
-import { BookOpen, Bot, Settings2, SquareTerminal } from "lucide-react";
+import { Stethoscope } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
@@ -12,102 +13,39 @@ interface UserProps {
 }
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+
   navMain: [
     {
-      title: "Playground",
+      title: "Info",
       url: "#",
-      icon: SquareTerminal,
+      icon: Stethoscope,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Medición",
+          url: "/measurement",
         },
+    
         {
-          title: "Starred",
-          url: "#",
+          title: "Historica",
+          url: "/history",
         },
+
         {
-          title: "Settings",
-          url: "#",
+          title: "Grafica Historica",
+          url: "/graph",
         },
       ],
     },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limitsss",
-          url: "#",
-        },
-      ],
-    },
+    
+   
   ],
 };
 
 export function DashboardSidebar() {
   const { data: session, status } = useSession();
+  const currentUser = useAuthStore((state) => state.user);
+  const userId = currentUser?.id ?? "";
   const [user, setUser] = useState<UserProps>({
     email: "",
     avatar: "",
@@ -126,5 +64,9 @@ export function DashboardSidebar() {
     }
   }, [status, session]);
 
-  return <AppSidebar user={user} navMain={data.navMain} />;
+  data.navMain[0].items[0].url = `/${userId}/measurement`;
+  data.navMain[0].items[1].url = `/${userId}/history`;
+  data.navMain[0].items[2].url = `/${userId}/graph`;
+
+  return <AppSidebar user={user} navMain={data.navMain}  />;
 }
