@@ -6,7 +6,7 @@ export interface AppAlertProps extends React.ComponentProps<typeof Alert> {
   children: ReactNode;
   icon?: ReactNode;
   title: string;
-  variant?: "default" | "destructive";
+  variant?: "default" | "destructive" | "info";
 }
 
 export const AppAlert: React.FC<AppAlertProps> = ({
@@ -17,7 +17,7 @@ export const AppAlert: React.FC<AppAlertProps> = ({
   ...props
 }) => {
   return (
-    <div className="grid w-full max-w-xl items-start gap-4">
+    <div className="grid w-full items-start gap-4">
       <Alert variant={variant} {...props}>
         {icon}
 

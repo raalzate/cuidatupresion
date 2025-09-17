@@ -27,6 +27,15 @@ describe("Alert", () => {
     expect(screen.getByText("Destructive alert")).toBeInTheDocument();
   });
 
+  it("renders with info variant", () => {
+    render(<Alert variant="info">Info alert</Alert>);
+
+    const alert = screen.getByRole("alert");
+
+    expect(alert).toHaveClass("text-blue-700");
+    expect(screen.getByText("Info alert")).toBeInTheDocument();
+  });
+
   it("applies custom className", () => {
     render(<Alert className="custom-class">Custom</Alert>);
 
