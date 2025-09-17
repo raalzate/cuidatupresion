@@ -7,7 +7,7 @@ import { apiClient } from "@/services/api";
 import { EmptyState } from "@/components/shared/empty-state/empty-state";
 import { Heading } from "@/components/shared/heading/heading";
 import { Measurements, MeasurementTags, Tags } from "@prisma/client";
-import { BloodPressureChart } from "../components/overview-chart";
+import { BloodPressureChart } from "../components/blood-pressure-chart";
 import { Separator } from "@radix-ui/react-separator";
 
 type MeasurementTagsProps = { tag: Tags } & MeasurementTags;
