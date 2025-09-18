@@ -17,14 +17,18 @@ export const AppAlert: React.FC<AppAlertProps> = ({
   ...props
 }) => {
   return (
-    <div className="grid w-full items-start gap-4">
-      <Alert variant={variant} {...props}>
-        {icon}
+    <div className="flex-col">
+      <div className="flex-1 px-8 pt-6">
+        <div className="grid w-full items-start gap-4">
+          <Alert variant={variant} {...props}>
+            {icon}
 
-        <AlertTitle>{title}</AlertTitle>
+            <AlertTitle>{title}</AlertTitle>
 
-        <AlertDescription>{children}</AlertDescription>
-      </Alert>
+            <AlertDescription>{children}</AlertDescription>
+          </Alert>
+        </div>
+      </div>
     </div>
   );
 };
