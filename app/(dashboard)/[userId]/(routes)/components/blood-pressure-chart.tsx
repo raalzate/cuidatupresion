@@ -1,86 +1,146 @@
-'use client';
-
+// BloodPressureChart.tsx
+import React from 'react';
 import {
-  Line,
   LineChart,
-  ResponsiveContainer,
-  Tooltip,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
-} from 'recharts';
-import dayjs from 'dayjs';
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  ReferenceLine,
+  Label
+} from 'recharts'; // Se elimina la importación de TooltipProps
 
+// --- INTERFAZ DE PROPS PARA EL COMPONENTE ---
 interface BloodPressureChartProps {
   data: {
-    timestamp: number; // formato ISO: "2025-09-17T08:30:00Z"
-    systolic: number;  // presión sistólica
-    diastolic: number; // presión diastólica
+    timestamp: number;
+    systolic: number;
+    diastolic: number;
   }[];
 }
 
+// Tipo que describe la forma de nuestros datos
+type DataPoint = {
+  timestamp: number;
+  systolic: number;
+  diastolic: number;
+};
+
+// --- NUEVO: INTERFACE EXPLÍCITA PARA EL TOOLTIP ---
+// Definimos exactamente qué propiedades esperamos que Recharts nos envíe.
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: {
+    value: number;
+    name: string;
+    payload: DataPoint; // Usamos nuestro tipo DataPoint aquí para máxima seguridad
+  }[];
+  label?: number;
+}
+
+// --- FUNCIÓN DE ANÁLISIS (sin cambios) ---
+const analyzePeriodData = (periodData: DataPoint[]) => {
+    if (periodData.length === 0) { return { systolicAvg: 0, diastolicAvg: 0, systolicMax: 0, diastolicMax: 0, systolicMin: 0, diastolicMin: 0 }; }
+    const initial = { systolicSum: 0, diastolicSum: 0, systolicMax: -Infinity, diastolicMax: -Infinity, systolicMin: Infinity, diastolicMin: Infinity, };
+    const stats = periodData.reduce((acc, cur) => { acc.systolicSum += cur.systolic; acc.diastolicSum += cur.diastolic; if (cur.systolic > acc.systolicMax) acc.systolicMax = cur.systolic; if (cur.systolic < acc.systolicMin) acc.systolicMin = cur.systolic; if (cur.diastolic > acc.diastolicMax) acc.diastolicMax = cur.diastolic; if (cur.diastolic < acc.diastolicMin) acc.diastolicMin = cur.diastolic; return acc; }, initial);
+    return { systolicAvg: Math.round(stats.systolicSum / periodData.length), diastolicAvg: Math.round(stats.diastolicSum / periodData.length), systolicMax: stats.systolicMax, diastolicMax: stats.diastolicMax, systolicMin: stats.systolicMin, diastolicMin: stats.diastolicMin, };
+};
+
+// --- COMPONENTE PRINCIPAL ---
 export const BloodPressureChart: React.FC<BloodPressureChartProps> = ({ data }) => {
-  const formattedData = data.map((d) => ({
-    ...d,
-    timestamp: new Date(d.timestamp).getTime(),
-  }));
+
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setDate(endDate.getDate() - 1);
+
+  const filteredData = data.filter(
+    d => d.timestamp >= startDate.getTime() && d.timestamp <= endDate.getTime()
+  ).sort((a, b) => a.timestamp - b.timestamp);
+
+  const analysis = analyzePeriodData(filteredData);
+  const formatXAxisTick = (timestamp: number) => new Date(timestamp).getHours().toString().padStart(2, '0') + ':00';
+
+  // --- CORRECCIÓN: USAMOS NUESTRA PROPIA INTERFACE ---
+  const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+    if (active && payload && payload.length) {
+        // Ahora TypeScript sabe exactamente qué es 'payload' y 'dataPoint'
+        const dataPoint = payload[0].payload;
+        return (
+            <div className="bg-white border border-gray-300 p-3 rounded-lg shadow-lg text-sm">
+                <p className="font-bold m-0">{label ? new Date(label).toLocaleString() : ''}</p>
+                <hr className="my-1 border-t border-gray-200"/>
+                <p className="text-blue-500 m-0">Sistólica: <strong className="font-bold">{dataPoint.systolic}</strong> (Promedio 24h: {analysis.systolicAvg})</p>
+                <p className="text-green-500 m-0">Diastólica: <strong className="font-bold">{dataPoint.diastolic}</strong> (Promedio 24h: {analysis.diastolicAvg})</p>
+            </div>
+        );
+    }
+    return null;
+  };
 
   return (
-    <ResponsiveContainer width="100%" height={350}>
-      <LineChart data={formattedData}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#333333" />
-        
-        <XAxis
-          dataKey="timestamp"
-          scale="time"
-          type="number"
-          domain={['auto', 'auto']}
-          tickFormatter={(value) => dayjs(value).format('DD/MM HH:mm')}
-          stroke="#888888"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-        />
-
-        <YAxis
-          stroke="#888888"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-          tickFormatter={(value) => `${value} mmHg`}
-        />
-
-        <Tooltip
-          labelFormatter={(value) => dayjs(value).format('DD/MM/YYYY HH:mm')}
-          formatter={(value, name) => [`${value} mmHg`, name]}
-          contentStyle={{
-            backgroundColor: '#1a1a1a',
-            border: 'none',
-            borderRadius: '8px',
-          }}
-          labelStyle={{ color: '#ffffff' }}
-          itemStyle={{ color: '#888888' }}
-        />
-
-        <Line
-          type="linear"
-          dataKey="systolic"
-          name="Sistólica"
-          stroke="#3498db"
-          strokeWidth={4}
-          dot={{ r: 4 }}
-          activeDot={{ r: 6 }}
-        />
-        <Line
-          type="linear"
-          dataKey="diastolic"
-          name="Diastólica"
-          stroke="#9b59b6"
-          strokeWidth={4}
-          dot={{ r: 4 }}
-          activeDot={{ r: 6 }}
-        />
-      </LineChart>
-    </ResponsiveContainer>
+    <div className="w-full  mx-auto font-sans p-4">
+      <div className="w-full h-[400px]">
+        <h3 className="text-xl font-bold text-center mb-1 text-gray-800">
+          Monitorización de Presión Arterial
+        </h3>
+        <p className="text-center text-xs text-gray-500 mb-4">
+          Período: {startDate.toLocaleString()} - {endDate.toLocaleString()}
+        </p>
+        <ResponsiveContainer>
+           {/* ... (resto del JSX sin cambios) ... */}
+           <LineChart data={filteredData} margin={{ top: 5, right: 40, left: 20, bottom: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <XAxis dataKey="timestamp" type="number" domain={[startDate.getTime(), endDate.getTime()]} tickFormatter={formatXAxisTick} tick={{ fontSize: 12, fill: '#374151' }} axisLine={{ stroke: '#9ca3af' }} tickLine={{ stroke: '#9ca3af' }} >
+              <Label value="Hora del día" offset={-15} position="insideBottom" fill="#374151" />
+            </XAxis>
+            <YAxis domain={[40, 'dataMax + 20']} tick={{ fontSize: 12, fill: '#374151' }} axisLine={{ stroke: '#9ca3af' }} tickLine={{ stroke: '#9ca3af' }} >
+               <Label value="Presión (mmHg)" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} fill="#374151" />
+            </YAxis>
+            <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#d1d5db', strokeWidth: 1 }} />
+            <Legend verticalAlign="top" wrapperStyle={{ paddingBottom: '20px' }} />
+            {analysis.systolicAvg > 0 && <ReferenceLine y={analysis.systolicAvg} stroke="#3b82f6" strokeDasharray="4 4"><Label value={`Prom. ${analysis.systolicAvg}`} position="right" fill="#3b82f6" fontSize={12} /></ReferenceLine>}
+            {analysis.diastolicAvg > 0 && <ReferenceLine y={analysis.diastolicAvg} stroke="#22c55e" strokeDasharray="4 4"><Label value={`Prom. ${analysis.diastolicAvg}`} position="right" fill="#22c55e" fontSize={12} /></ReferenceLine>}
+            <Line type="linear" dataKey="systolic" name="Sistólica" stroke="#3b82f6" strokeWidth={3} dot={{ r: 3, fill: '#3b82f6' }} activeDot={{ r: 6 }} />
+            <Line type="linear" dataKey="diastolic" name="Diastólica" stroke="#22c55e" strokeWidth={3} dot={{ r: 3, fill: '#22c55e' }} activeDot={{ r: 6 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      
+      <div className="mt-8 pt-12">
+        <h4 className="text-lg font-semibold text-center text-gray-800 mb-4">Análisis del Período</h4>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left">
+            {/* ... (tabla sin cambios) ... */}
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="p-3 border border-gray-300 font-semibold text-gray-700">Métrica</th>
+                <th className="p-3 border border-gray-300 font-semibold text-gray-700 text-center">Valor Sistólica (mmHg)</th>
+                <th className="p-3 border border-gray-300 font-semibold text-gray-700 text-center">Valor Diastólica (mmHg)</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              <tr>
+                <td className="p-3 border border-gray-300 font-bold">Promedio</td>
+                <td className="p-3 border border-gray-300 text-center">{analysis.systolicAvg}</td>
+                <td className="p-3 border border-gray-300 text-center">{analysis.diastolicAvg}</td>
+              </tr>
+              <tr>
+                <td className="p-3 border border-gray-300 font-bold">Máximo</td>
+                <td className="p-3 border border-gray-300 text-center">{analysis.systolicMax}</td>
+                <td className="p-3 border border-gray-300 text-center">{analysis.diastolicMax}</td>
+              </tr>
+              <tr>
+                <td className="p-3 border border-gray-300 font-bold">Mínimo</td>
+                <td className="p-3 border border-gray-300 text-center">{analysis.systolicMin}</td>
+                <td className="p-3 border border-gray-300 text-center">{analysis.diastolicMin}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   );
 };
