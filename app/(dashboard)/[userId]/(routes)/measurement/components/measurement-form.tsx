@@ -20,12 +20,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Heading } from "@/components/shared/heading/heading";
+import { HyperHypoModals } from "./hyper-hypo-modals";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/shared/separator/separator";
-import { ADDITIONAL_TAGS } from "@/config/config";
 import { Modal } from "@/components/shared/modal/modal";
+import { Separator } from "@/components/shared/separator/separator";
+import {
+  isHypertensiveCrisis,
+  isHypotensiveCrisis,
+} from "@/utils/bloodPressure";
+import { useAlertStore } from "@/stores/alert/alert.store";
 
-import { PSYS_MAX, PDYS_MAX, PSYS_MIN, PDYS_MIN, PULSE_MAX, PULSE_MIN } from "@/config/config";
+import { ADDITIONAL_TAGS } from "@/config/config";
+import {
+  PSYS_MAX,
+  PDYS_MAX,
+  PSYS_MIN,
+  PDYS_MIN,
+  PULSE_MAX,
+  PULSE_MIN,
+} from "@/config/config";
 
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
@@ -37,16 +50,28 @@ const formSchema = z.object({
     .pipe(
       z
         .number({ message: "Debe ser un número válido" })
-        .min(PDYS_MIN, `La presión diastólica debe ser mayor a ${PDYS_MIN} mmHg`)
-        .max(PDYS_MAX, `La presión diastólica debe ser menor a ${PDYS_MAX} mmHg`)
+        .min(
+          PDYS_MIN,
+          `La presión diastólica debe ser mayor a ${PDYS_MIN} mmHg`
+        )
+        .max(
+          PDYS_MAX,
+          `La presión diastólica debe ser menor a ${PDYS_MAX} mmHg`
+        )
     ),
   heartRate: z
     .transform(Number)
     .pipe(
       z
         .number({ message: "Debe ser un número válido" })
-        .min(PULSE_MIN, `La frecuencia cardíaca debe ser mayor a ${PULSE_MIN} lpm`)
-        .max(PULSE_MAX, `La frecuencia cardíaca debe ser menor a ${PULSE_MAX} lpm`)
+        .min(
+          PULSE_MIN,
+          `La frecuencia cardíaca debe ser mayor a ${PULSE_MIN} lpm`
+        )
+        .max(
+          PULSE_MAX,
+          `La frecuencia cardíaca debe ser menor a ${PULSE_MAX} lpm`
+        )
     ),
   tags: z.string().array().min(1, "Debe seleccionar al menos una observación"),
   systolicPressure: z
@@ -72,9 +97,18 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
   initialData,
   userId,
 }) => {
+  const setShowHypertensionAlert = useAlertStore(
+    (state) => state.setShowHypertensionAlert
+  );
+  const setShowHypotensionAlert = useAlertStore(
+    (state) => state.setShowHypotensionAlert
+  );
+
   const [loading, setLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [formData, setFormData] = useState<MedicalFormValues | null>(null);
+  const [hasHypertension, setHasHypertension] = useState<boolean>(false);
+  const [hasHypotension, setHasHypotension] = useState<boolean>(false);
   const router = useRouter();
 
   const tagsOptions = ADDITIONAL_TAGS.map((tagItem) => ({
@@ -106,7 +140,7 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
 
     try {
       setLoading(true);
-      
+
       await apiClient.post(`/users/${userId}/measurement`, {
         diastolicPressure: formData.diastolicPressure,
         systolicPressure: formData.systolicPressure,
@@ -114,19 +148,35 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
         tags: formData.tags,
       });
 
+      const isHypertensive = isHypertensiveCrisis(
+        formData.systolicPressure,
+        formData.diastolicPressure
+      );
+      const isHypotensive = isHypotensiveCrisis(
+        formData.systolicPressure,
+        formData.diastolicPressure
+      );
+
+      setHasHypertension(isHypertensive);
+      setHasHypotension(isHypotensive);
+      setShowHypertensionAlert(isHypertensive);
+      setShowHypotensionAlert(isHypotensive);
+
       toast.success("Medición guardada correctamente");
       setShowModal(false);
-      
-      // Reset form
-      form.reset({
-        diastolicPressure: 0,
-        heartRate: 0,
-        tags: [],
-        systolicPressure: 0,
-      });
-      
-      // Optionally redirect to history page
-      router.push(`/${userId}/history`);
+
+      if (!isHypertensive && !isHypotensive) {
+        // Reset form
+        form.reset({
+          diastolicPressure: 0,
+          heartRate: 0,
+          tags: [],
+          systolicPressure: 0,
+        });
+
+        // Optionally redirect to history page
+        router.push(`/${userId}/history`);
+      }
     } catch (error) {
       console.error(error);
       toast.error("Error al guardar la medición");
@@ -144,7 +194,10 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading description="Registra los datos de tu lectura de presión arterial en el siguiente formulario" title="Registrar Lectura de Presión Arterial" />
+        <Heading
+          description="Registra los datos de tu lectura de presión arterial en el siguiente formulario"
+          title="Registrar Lectura de Presión Arterial"
+        />
       </div>
 
       <Separator />
@@ -235,9 +288,13 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
                       }))}
                       isDisabled={loading}
                       onChange={(selectedOptions) => {
-                        const selectedTags = selectedOptions && Array.isArray(selectedOptions)
-                          ? selectedOptions.map((option: { label: string; value: string }) => option.label)
-                          : [];
+                        const selectedTags =
+                          selectedOptions && Array.isArray(selectedOptions)
+                            ? selectedOptions.map(
+                                (option: { label: string; value: string }) =>
+                                  option.label
+                              )
+                            : [];
                         field.onChange(selectedTags);
                       }}
                       options={tagsOptions}
@@ -275,32 +332,41 @@ export const MeasurementForm: React.FC<MedicalFormProps> = ({
         title="Confirmar medición"
       >
         <p>¿Está seguro de los valores a ingresar? Por favor confirme</p>
-        
+
         {formData && (
           <div className="my-4 p-4 bg-gray-50 rounded-md">
-            <p><strong>Presión sistólica:</strong> {formData.systolicPressure} mmHg</p>
-            <p><strong>Presión diastólica:</strong> {formData.diastolicPressure} mmHg</p>
-            <p><strong>Frecuencia cardíaca:</strong> {formData.heartRate} bpm</p>
-            <p><strong>Observaciones:</strong> {formData.tags.join(", ")}</p>
+            <p>
+              <strong>Presión sistólica:</strong> {formData.systolicPressure}{" "}
+              mmHg
+            </p>
+            <p>
+              <strong>Presión diastólica:</strong> {formData.diastolicPressure}{" "}
+              mmHg
+            </p>
+            <p>
+              <strong>Frecuencia cardíaca:</strong> {formData.heartRate} bpm
+            </p>
+            <p>
+              <strong>Observaciones:</strong> {formData.tags.join(", ")}
+            </p>
           </div>
         )}
 
         <div className="flex gap-2 mt-4">
-          <Button
-            variant="secondary"
-            onClick={handleCancel}
-            disabled={loading}
-          >
+          <Button variant="secondary" onClick={handleCancel} disabled={loading}>
             Cancelar
           </Button>
-          <Button
-            onClick={handleConfirm}
-            disabled={loading}
-          >
+          <Button onClick={handleConfirm} disabled={loading}>
             {loading ? "Guardando..." : "Confirmar lectura"}
           </Button>
         </div>
       </Modal>
+
+      <HyperHypoModals
+        showConfirmHyperModal={hasHypertension}
+        showHypoModal={hasHypotension}
+        userId={userId}
+      />
     </>
   );
 };

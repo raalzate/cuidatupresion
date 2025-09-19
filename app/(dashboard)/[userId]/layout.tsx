@@ -21,6 +21,9 @@ export default function DashboardLayout({
   const showHypotensionAlert = useAlertStore(
     (state) => state.showHypotensionAlert
   );
+  const showHypertensionAlert = useAlertStore(
+    (state) => state.showHypertensionAlert
+  );
 
   return (
     <SidebarProvider>
@@ -51,6 +54,16 @@ export default function DashboardLayout({
                 inmediato para prevenir una caída. Informe a su médico sobre
                 esta lectura.
               </p>
+            </AppAlert>
+          )}
+
+          {showHypertensionAlert && (
+            <AppAlert
+              icon={<AlertCircleIcon />}
+              title="¡Atención! Su última toma de presión indica crisis hipertensiva"
+              variant="destructive"
+            >
+              <p>Por favor contacte a un médico lo más pronto posible.</p>
             </AppAlert>
           )}
 
