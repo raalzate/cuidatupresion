@@ -10,7 +10,7 @@ export interface AlertState {
 
 const storeApi: StateCreator<AlertState> = (set) => ({
   showHypertensionAlert: false,
-  showHypotensionAlert: true,
+  showHypotensionAlert: false,
   setShowHypertensionAlert: (show: boolean) =>
     set({ showHypertensionAlert: show }),
   setShowHypotensionAlert: (show: boolean) =>
