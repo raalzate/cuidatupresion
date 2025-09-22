@@ -1,3 +1,8 @@
+"use client";
+
+import { AlertCircleIcon } from "lucide-react";
+
+import { AppAlert } from "@/components/shared/alert/alert";
 import { DashboardBreadcrumb } from "./components/dashboard-breadcrumb";
 import { DashboardSidebar } from "./components/dashboard-sidebar";
 import { Separator } from "@/components/shared/separator/separator";
@@ -6,13 +11,20 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useAlertStore } from "@/stores/alert/alert.store";
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
-  params: Promise<{ userId: string }>;
 }) {
+  const showHypotensionAlert = useAlertStore(
+    (state) => state.showHypotensionAlert
+  );
+  const showHypertensionAlert = useAlertStore(
+    (state) => state.showHypertensionAlert
+  );
+
   return (
     <SidebarProvider>
       <DashboardSidebar />
@@ -30,7 +42,33 @@ export default async function DashboardLayout({
             <DashboardBreadcrumb />
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          {showHypotensionAlert && (
+            <AppAlert
+              icon={<AlertCircleIcon />}
+              title="¡Atención! Su presión arterial es baja"
+              variant="info"
+            >
+              <p>
+                Si se siente mareado, débil o aturdido, siéntese o recuéstese de
+                inmediato para prevenir una caída. Informe a su médico sobre
+                esta lectura.
+              </p>
+            </AppAlert>
+          )}
+
+          {showHypertensionAlert && (
+            <AppAlert
+              icon={<AlertCircleIcon />}
+              title="¡Atención! Su última toma de presión indica crisis hipertensiva"
+              variant="destructive"
+            >
+              <p>Por favor contacte a un médico lo más pronto posible.</p>
+            </AppAlert>
+          )}
+
+          {children}
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );
