@@ -39,7 +39,9 @@ export const HyperHypoModals: React.FC<HyperHypoModalsProps> = ({
       <Modal
         description=""
         isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={() => {
+          setShowModal(false);
+        }}
         title="Confirmar síntomas crisis hipertensiva"
       >
         <p className="mb-4">¿Presenta alguno de estos síntomas?</p>
