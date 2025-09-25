@@ -55,7 +55,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Deploy to Vercel
+      - name: 3. Deploy to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
