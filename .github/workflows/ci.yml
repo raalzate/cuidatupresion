@@ -39,7 +39,6 @@ jobs:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
   # ------ TRABAJO DE DESPLIEGUE A VERCEL ------
-  # ------ TRABAJO DE DESPLIEGUE A VERCEL ------
   deploy:
     name: Deploy to Vercel
     runs-on: ubuntu-latest
@@ -56,10 +55,11 @@ jobs:
         with:
           node-version: '22'
 
-      - name: 3. Deploy to Vercel Production
-        uses: vercel/vercel-action@v3 # 
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-prod: true
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          npm install -g vercel
+          vercel --token $VERCEL_TOKEN --prod --confirm
