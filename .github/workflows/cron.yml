@@ -1,0 +1,11 @@
+name: Call Cron API Hourly
+on:
+  schedule:
+    # Se ejecuta al minuto 0 de cada hora
+    - cron: '0 * * * *'
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call API endpoint
+        run: curl -X GET "https://cuidatupresion.vercel.app/api/send-notification"
