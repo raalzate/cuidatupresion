@@ -157,6 +157,7 @@ describe("AppSidebar", () => {
     name: "John Doe",
     email: "john.doe@example.com",
     avatar: "https://example.com/avatar.jpg",
+    id: "123",
   };
 
   const mockNavMain = [
@@ -257,6 +258,7 @@ describe("AppSidebar", () => {
         name: "Jane Smith",
         email: "jane.smith@test.com",
         avatar: "https://test.com/jane.jpg",
+        id: "456",
       };
 
       render(<AppSidebar user={differentUser} navMain={mockNavMain} />);
@@ -275,6 +277,7 @@ describe("AppSidebar", () => {
         name: "José María",
         email: "josé.maría@español.com",
         avatar: "https://example.com/josé.jpg",
+        id: "789",
       };
 
       render(<AppSidebar user={specialUser} navMain={mockNavMain} />);
@@ -500,6 +503,7 @@ describe("AppSidebar", () => {
         name: "",
         email: "",
         avatar: "",
+        id: "",
       };
 
       render(<AppSidebar user={emptyUser} navMain={mockNavMain} />);

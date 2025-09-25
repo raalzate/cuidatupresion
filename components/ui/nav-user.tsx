@@ -1,14 +1,7 @@
 "use client";
 
+import { ChevronsUpDown, LogOut, Settings2 } from "lucide-react";
 import { signOut } from "next-auth/react";
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  LogOut,
-  Sparkles,
-  Settings2,
-} from "lucide-react";
 import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
@@ -36,6 +29,7 @@ export function NavUser({
     name: string;
     email: string;
     avatar: string;
+    id: string;
   };
 }) {
   const { isMobile } = useSidebar();
@@ -95,29 +89,11 @@ export function NavUser({
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-
               <DropdownMenuItem asChild>
-                <Link href="/user1/settings">
+                <Link href={`/${user.id}/profile`}>
                   <Settings2 />
                   Actualizar datos
                 </Link>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem>
-                <Bell />
-                Notificaciones
               </DropdownMenuItem>
             </DropdownMenuGroup>
 
