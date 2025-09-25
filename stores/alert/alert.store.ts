@@ -14,21 +14,23 @@ export interface AlertState {
 
 const storeApi: StateCreator<AlertState> = (set) => ({
   token: "",
-  notificationPermission: 'default', 
-  setNotificationPermission: (permission) => set({ notificationPermission: permission }), 
-  setToken: (token: string) => set({ token }),
   showHypertensionAlert: false,
   showHypotensionAlert: false,
+  notificationPermission: 'default', 
+  
+  setToken: (token: string) => set({ token }),
   setShowHypertensionAlert: (show: boolean) =>
     set({ showHypertensionAlert: show }),
   setShowHypotensionAlert: (show: boolean) =>
     set({ showHypotensionAlert: show }),
+  setNotificationPermission: (permission) => set({ notificationPermission: permission }), 
 });
 
 export const useAlertStore = create<AlertState>()(
   devtools(
     persist(storeApi, {
       name: "alert-storage",
+      partialize: (state) => ({ token: state.token }),
     })
   )
 );

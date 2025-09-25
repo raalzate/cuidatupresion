@@ -28,15 +28,15 @@ export default function DashboardLayout({
     (state) => state.showHypertensionAlert
   );
 
-  const { setToken, notificationPermission, setNotificationPermission } =
-    useAlertStore((state) => ({
-      setToken: state.setToken,
-      notificationPermission: state.notificationPermission,
-      setNotificationPermission: state.setNotificationPermission,
-    }));
+  const setToken = useAlertStore((state) => state.setToken);
+  const notificationPermission = useAlertStore(
+    (state) => state.notificationPermission
+  );
+  const setNotificationPermission = useAlertStore(
+    (state) => state.setNotificationPermission
+  );
 
   useEffect(() => {
-    // Registrar el Service Worker (tu código original está bien)
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
@@ -49,13 +49,13 @@ export default function DashboardLayout({
     }
 
     const setupNotifications = async () => {
-      // Comprobar si Firebase Messaging y Notifications son compatibles
+            let currentPermission = Notification.permission;
+
       if (!messaging || !("Notification" in window)) {
-        setNotificationPermission("denied"); // No hay soporte, lo marcamos como denegado
+        setNotificationPermission("denied");
+        currentPermission = await Notification.requestPermission();
         return;
       }
-
-      let currentPermission = Notification.permission;
 
       if (currentPermission === "default") {
         currentPermission = await Notification.requestPermission();
@@ -63,14 +63,13 @@ export default function DashboardLayout({
 
       setNotificationPermission(currentPermission);
 
-      // Si el permiso fue concedido, obtenemos el token
       if (currentPermission === "granted") {
         try {
           const token = await getToken(messaging, {
             vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
           });
           console.log("FCM Token:", token);
-          setToken(token);
+          setToken(token); // token es un string
         } catch (err) {
           console.error("Error obteniendo el token:", err);
         }
@@ -99,8 +98,7 @@ export default function DashboardLayout({
         </header>
 
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {/* --- 3. AÑADE LA ALERTA CONDICIONAL (DISCLAIMER) --- */}
-          {notificationPermission !== "granted" && (
+          {notificationPermission!== "default" && notificationPermission !== "granted" && (
             <AppAlert
               icon={<AlertCircleIcon />}
               title="Activar notificaciones"
