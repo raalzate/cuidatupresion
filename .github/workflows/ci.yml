@@ -39,15 +39,15 @@ jobs:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
   # ------ TRABAJO DE DESPLIEGUE A VERCEL ------
+  # ------ TRABAJO DE DESPLIEGUE A VERCEL ------
   deploy:
     name: Deploy to Vercel
     runs-on: ubuntu-latest
-    # Necesita que el trabajo 'test' haya sido exitoso
     needs: test
-    # Condición: Solo se ejecuta en un PUSH a la rama 'main'
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
+      # 👇 ESTE PASO ES ESENCIAL Y DEBE ESTAR PRIMERO 👇
       - name: 1. Check out the repository
         uses: actions/checkout@v4
 
@@ -55,14 +55,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          # No es necesario caché aquí si no instalas dependencias de nuevo
 
       - name: 3. Deploy to Vercel Production
-        # Usa la acción oficial de Vercel, es más segura y eficiente
-        uses: vercel/vercel-action@v3
+        uses: vercel/vercel-action@v3 # 
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          # Indica que es un despliegue a producción
           vercel-prod: true
