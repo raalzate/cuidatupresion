@@ -14,7 +14,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useAlertStore } from "@/stores/alert/alert.store";
-import { messaging } from "@/lib/firebase"; 
+import { messaging } from "@/lib/firebase";
 
 export default function DashboardLayout({
   children,
@@ -28,12 +28,15 @@ export default function DashboardLayout({
     (state) => state.showHypertensionAlert
   );
 
-  const setToken = useAlertStore(
-      (state) => state.setToken
-  );
-
+  const { setToken, notificationPermission, setNotificationPermission } =
+    useAlertStore((state) => ({
+      setToken: state.setToken,
+      notificationPermission: state.notificationPermission,
+      setNotificationPermission: state.setNotificationPermission,
+    }));
 
   useEffect(() => {
+    // Registrar el Service Worker (tu código original está bien)
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
@@ -45,25 +48,40 @@ export default function DashboardLayout({
         });
     }
 
-    if (messaging) {
-      Notification.requestPermission().then(async (permission) => {
-        if (permission === "granted" && messaging) {
-          try {
-            const token = await getToken(messaging, {
-              vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
-            });
-            console.log("FCM Token:", token);// quitar luego
-            setToken(token);
-          } catch (err) {
-            console.error("Error obteniendo token:", err);
-          }
-        } else {
-          console.warn("Permiso de notificaciones denegado");
-        }
-      });
+    const setupNotifications = async () => {
+      // Comprobar si Firebase Messaging y Notifications son compatibles
+      if (!messaging || !("Notification" in window)) {
+        setNotificationPermission("denied"); // No hay soporte, lo marcamos como denegado
+        return;
+      }
 
-    }
-  }, [setToken]);
+      let currentPermission = Notification.permission;
+
+      if (currentPermission === "default") {
+        currentPermission = await Notification.requestPermission();
+      }
+
+      setNotificationPermission(currentPermission);
+
+      // Si el permiso fue concedido, obtenemos el token
+      if (currentPermission === "granted") {
+        try {
+          const token = await getToken(messaging, {
+            vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+          });
+          console.log("FCM Token:", token);
+          setToken(token);
+        } catch (err) {
+          console.error("Error obteniendo el token:", err);
+        }
+      } else {
+        console.warn(`Permiso de notificaciones: ${currentPermission}`);
+        setToken("");
+      }
+    };
+
+    setupNotifications();
+  }, [setToken, setNotificationPermission]);
 
   return (
     <SidebarProvider>
@@ -81,6 +99,21 @@ export default function DashboardLayout({
         </header>
 
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          {/* --- 3. AÑADE LA ALERTA CONDICIONAL (DISCLAIMER) --- */}
+          {notificationPermission !== "granted" && (
+            <AppAlert
+              icon={<AlertCircleIcon />}
+              title="Activar notificaciones"
+              variant="info"
+            >
+              <p>
+                Para recibir alertas importantes sobre su salud en tiempo real,
+                por favor active las notificaciones en la configuración de su
+                navegador.
+              </p>
+            </AppAlert>
+          )}
+
           {showHypotensionAlert && (
             <AppAlert
               icon={<AlertCircleIcon />}

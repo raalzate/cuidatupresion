@@ -5,7 +5,7 @@ export async function GET() {
   try {
 
     const message = {
-      token: "c4ik_v4kA0QcZXcwMw8Db1:APA91bGR0ks9RNsAXczCLjmrjkEUNjRWlZTCBHqahXJzgbH56kGpCQ1HQg0NReZEgJu3CW89f2AvtrfVniTl_I-br9DOg6FW-fA6irtsGkCUyMa1dXkf0eY",
+      token: "eiQEVzcZD8LEZ2QlPft7yI:APA91bHYnNvtir4pOkB0hOeWCxW4nJc6uCgjLdThPMQdvdMhyKXYRjtkSmxQXNgdkOMHfEsvVSoKXw67AbsuUDW_-1h5Sk8yflEG_tdNnaUFRIfqYjsl4S0",
       notification: {
         title: "Notificación de prueba",
         body: "Hola desde Firebase Admin 🚀",

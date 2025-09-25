@@ -6,12 +6,16 @@ export interface AlertState {
   setToken: (token: string) => void;
   showHypertensionAlert: boolean;
   showHypotensionAlert: boolean;
+  notificationPermission: 'default' | 'granted' | 'denied';
   setShowHypertensionAlert: (show: boolean) => void;
   setShowHypotensionAlert: (show: boolean) => void;
+  setNotificationPermission: (permission: 'default' | 'granted' | 'denied') => void; 
 }
 
 const storeApi: StateCreator<AlertState> = (set) => ({
   token: "",
+  notificationPermission: 'default', 
+  setNotificationPermission: (permission) => set({ notificationPermission: permission }), 
   setToken: (token: string) => set({ token }),
   showHypertensionAlert: false,
   showHypotensionAlert: false,
