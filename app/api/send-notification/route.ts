@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { adminMessaging } from "@/lib/firebase-admin";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
 
     const message = {
@@ -15,7 +15,7 @@ export async function GET(req: Request) {
     const response = await adminMessaging.send(message);
 
     return NextResponse.json({ success: true, response });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error enviando push:", error);
     return NextResponse.json(
       { success: false, error: error.message },
