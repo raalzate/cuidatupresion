@@ -2,6 +2,8 @@ import { create, StateCreator } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
 export interface AlertState {
+  token: string;
+  setToken: (token: string) => void;
   showHypertensionAlert: boolean;
   showHypotensionAlert: boolean;
   setShowHypertensionAlert: (show: boolean) => void;
@@ -9,6 +11,8 @@ export interface AlertState {
 }
 
 const storeApi: StateCreator<AlertState> = (set) => ({
+  token: "",
+  setToken: (token: string) => set({ token }),
   showHypertensionAlert: false,
   showHypotensionAlert: false,
   setShowHypertensionAlert: (show: boolean) =>
