@@ -30,6 +30,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const formSchema = z.object({
   title: z.string().min(1).max(70),
@@ -71,6 +72,33 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
       value: "",
     },
   });
+
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      form.setValue("startDate", date);
+    }
+  };
+
+  const handleTimeChange = (type: "hour" | "ampm", value: string) => {
+    const currentDate = form.getValues("startDate") || new Date();
+    const newDate = new Date(currentDate);
+
+    if (type === "hour") {
+      const hour = parseInt(value, 10);
+      newDate.setHours(newDate.getHours() >= 12 ? hour + 12 : hour);
+    } else if (type === "ampm") {
+      const hours = newDate.getHours();
+      if (value === "AM" && hours >= 12) {
+        newDate.setHours(hours - 12);
+      } else if (value === "PM" && hours < 12) {
+        newDate.setHours(hours + 12);
+      }
+    }
+
+    newDate.setMinutes(0);
+
+    form.setValue("startDate", newDate);
+  };
 
   const onSubmit = async (data: NotificationFormValues) => {
     try {
@@ -185,58 +213,121 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                           <CalendarIcon className="mr-2 h-4 w-4" />
 
                           {field.value ? (
-                            format(field.value, "PPP", { locale: es })
+                            format(field.value, "MM/dd/yyyy HH:mm")
                           ) : (
-                            <span>Selecciona una fecha</span>
+                            <span>MM/DD/YYYY HH:mm</span>
                           )}
                         </Button>
                       </PopoverTrigger>
 
                       <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          captionLayout="dropdown"
-                          disabled={(date) => {
-                            const today = new Date();
-                            today.setHours(0, 0, 0, 0);
+                        <div className="sm:flex">
+                          <Calendar
+                            captionLayout="dropdown"
+                            disabled={(date) => {
+                              const today = new Date();
+                              today.setHours(0, 0, 0, 0);
 
-                            return loading || date < today;
-                          }}
-                          formatters={{
-                            formatMonthDropdown: (date) =>
-                              date.toLocaleString("es", { month: "long" }),
-                            formatYearDropdown: (date) =>
-                              date.getFullYear().toString(),
-                            formatWeekdayName: (date) =>
-                              date.toLocaleDateString("es", {
-                                weekday: "narrow",
-                              }),
-                            formatCaption: (date) =>
-                              date.toLocaleDateString("es", {
-                                month: "long",
-                                year: "numeric",
-                              }),
-                          }}
-                          labels={{
-                            labelNext: () => "Mes siguiente",
-                            labelPrevious: () => "Mes anterior",
-                            labelMonthDropdown: () => "Seleccionar mes",
-                            labelYearDropdown: () => "Seleccionar año",
-                            labelDay: (date) =>
-                              date.toLocaleDateString("es", {
-                                day: "numeric",
-                                month: "long",
-                                year: "numeric",
-                              }),
-                            labelWeekday: (date) =>
-                              date.toLocaleDateString("es", {
-                                weekday: "long",
-                              }),
-                          }}
-                          locale={es}
-                          mode="single"
-                          onSelect={field.onChange}
-                          selected={field.value}
-                        />
+                              return loading || date < today;
+                            }}
+                            formatters={{
+                              formatMonthDropdown: (date) =>
+                                date.toLocaleString("es", { month: "long" }),
+                              formatYearDropdown: (date) =>
+                                date.getFullYear().toString(),
+                              formatWeekdayName: (date) =>
+                                date.toLocaleDateString("es", {
+                                  weekday: "narrow",
+                                }),
+                              formatCaption: (date) =>
+                                date.toLocaleDateString("es", {
+                                  month: "long",
+                                  year: "numeric",
+                                }),
+                            }}
+                            labels={{
+                              labelNext: () => "Mes siguiente",
+                              labelPrevious: () => "Mes anterior",
+                              labelMonthDropdown: () => "Seleccionar mes",
+                              labelYearDropdown: () => "Seleccionar año",
+                              labelDay: (date) =>
+                                date.toLocaleDateString("es", {
+                                  day: "numeric",
+                                  month: "long",
+                                  year: "numeric",
+                                }),
+                              labelWeekday: (date) =>
+                                date.toLocaleDateString("es", {
+                                  weekday: "long",
+                                }),
+                            }}
+                            locale={es}
+                            mode="single"
+                            onSelect={handleDateSelect}
+                            selected={field.value}
+                          />
+
+                          <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
+                            <ScrollArea className="w-64 sm:w-auto">
+                              <div className="flex sm:flex-col p-2">
+                                {Array.from({ length: 12 }, (_, i) => i + 1)
+                                  .reverse()
+                                  .map((hour) => (
+                                    <Button
+                                      key={hour}
+                                      size="icon"
+                                      variant={
+                                        field.value &&
+                                        field.value.getHours() % 12 ===
+                                          hour % 12
+                                          ? "default"
+                                          : "ghost"
+                                      }
+                                      className="sm:w-full shrink-0 aspect-square"
+                                      onClick={() =>
+                                        handleTimeChange(
+                                          "hour",
+                                          hour.toString()
+                                        )
+                                      }
+                                    >
+                                      {hour}
+                                    </Button>
+                                  ))}
+                              </div>
+                              <ScrollBar
+                                orientation="horizontal"
+                                className="sm:hidden"
+                              />
+                            </ScrollArea>
+
+                            <ScrollArea className="">
+                              <div className="flex sm:flex-col p-2">
+                                {["AM", "PM"].map((ampm) => (
+                                  <Button
+                                    key={ampm}
+                                    size="icon"
+                                    variant={
+                                      field.value &&
+                                      ((ampm === "AM" &&
+                                        field.value.getHours() < 12) ||
+                                        (ampm === "PM" &&
+                                          field.value.getHours() >= 12))
+                                        ? "default"
+                                        : "ghost"
+                                    }
+                                    className="sm:w-full shrink-0 aspect-square"
+                                    onClick={() =>
+                                      handleTimeChange("ampm", ampm)
+                                    }
+                                  >
+                                    {ampm}
+                                  </Button>
+                                ))}
+                              </div>
+                            </ScrollArea>
+                          </div>
+                        </div>
                       </PopoverContent>
                     </Popover>
                   </FormControl>
