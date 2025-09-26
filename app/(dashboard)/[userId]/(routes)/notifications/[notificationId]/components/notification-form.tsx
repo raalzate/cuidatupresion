@@ -13,6 +13,7 @@ import * as z from "zod";
 import { apiClient } from "@/services/api";
 import { AlertModal } from "@/components/shared/alert-modal/alert-modal";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -23,21 +24,40 @@ import {
 } from "@/components/ui/form";
 import { Heading } from "@/components/shared/heading/heading";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/shared/separator/separator";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/shared/separator/separator";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
+
+import {
+  NOTIFICATION_TYPE_OPTIONS,
+  REPEAT_INTERVAL_OPTIONS,
+} from "../constants";
 
 const formSchema = z.object({
-  title: z.string().min(1).max(70),
+  title: z
+    .string()
+    .min(1, "El título es obligatorio")
+    .max(70, "El título debe tener menos de 70 caracteres"),
+  type: z.string().min(1, "El tipo es obligatorio"),
   startDate: z
     .date()
     .min(new Date(), "La fecha debe ser igual o posterior a la actual"),
-  value: z.string().min(4),
+  repeatInterval: z.string(),
+  additionalNotes: z
+    .string()
+    .max(255, "Las notas adicionales deben tener menos de 255 caracteres"),
 });
 
 type NotificationFormValues = z.infer<typeof formSchema>;
@@ -69,7 +89,10 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       title: "",
-      value: "",
+      type: "",
+      startDate: new Date(),
+      repeatInterval: "0",
+      additionalNotes: "",
     },
   });
 
@@ -197,10 +220,49 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
 
             <FormField
               control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tipo de recordatorio</FormLabel>
+
+                  <Select
+                    defaultValue={field.value}
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Selecciona un tipo de recordatorio"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+
+                    <SelectContent>
+                      {NOTIFICATION_TYPE_OPTIONS.map((notificationType) => (
+                        <SelectItem
+                          key={notificationType.value}
+                          value={notificationType.value}
+                        >
+                          {notificationType.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="startDate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Fecha de nacimiento</FormLabel>
+                  <FormLabel>Fecha del recordatorio</FormLabel>
 
                   <FormControl>
                     <Popover>
@@ -337,26 +399,65 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="value"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Valor</FormLabel>
-
-                  <FormControl>
-                    <Input
+            {form.watch("type") !== "CITA_MEDICA" && (
+              <FormField
+                control={form.control}
+                name="repeatInterval"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Repetir cada</FormLabel>
+                    <Select
+                      defaultValue={field.value}
                       disabled={loading}
-                      placeholder="Valor de la notificación"
-                      {...field}
-                    />
-                  </FormControl>
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            defaultValue={field.value}
+                            placeholder="Selecciona una frecuencia"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                      <SelectContent>
+                        {REPEAT_INTERVAL_OPTIONS.map((repeatIntervalType) => (
+                          <SelectItem
+                            key={repeatIntervalType.value}
+                            value={repeatIntervalType.value}
+                          >
+                            {repeatIntervalType.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </div>
+          <FormField
+            control={form.control}
+            name="additionalNotes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Notas adicionales</FormLabel>
+
+                <FormControl>
+                  <Textarea
+                    disabled={loading}
+                    placeholder="Ingresa aquí notas adicionales sobre tu recordatorio"
+                    {...field}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}
