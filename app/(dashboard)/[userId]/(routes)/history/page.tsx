@@ -54,8 +54,15 @@ const HistoryPage = () => {
 
   if (loading) {
     return (
-      <div className="flex-1 space-y-4 p-8 pt-6">
-        <p>Cargando historial...</p>
+      <div className="flex-col">
+        <div className="flex-1 space-y-4 p-8 pt-6">
+          <EmptyState
+            ctaHref={`/${userId}/measurement`}
+            ctaLabel="Añadir medición"
+            subtitle="Pronto podrás ver tu información."
+            title="Cargando tus mediciones..."
+          />
+        </div>
       </div>
     );
   }

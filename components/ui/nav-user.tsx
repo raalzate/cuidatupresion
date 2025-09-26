@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, Settings2 } from "lucide-react";
+import { Bell, ChevronsUpDown, LogOut, Settings2 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 
@@ -93,6 +93,13 @@ export function NavUser({
                 <Link href={`/${user.id}/profile`}>
                   <Settings2 />
                   Actualizar datos
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <Link href={`/${user.id}/notifications`}>
+                  <Bell />
+                  Notificaciones
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
