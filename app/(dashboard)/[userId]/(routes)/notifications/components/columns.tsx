@@ -6,26 +6,29 @@ import { CellAction } from "./cell-action";
 
 export type NotificationColumns = {
   id: string;
-  name: string;
-  value: string;
-  createdAt: string;
+  type: string;
+  repeatInterval: number;
+  title: string;
+  additionalNotes: string;
+  startDate: string;
 };
 
 export const columns: ColumnDef<NotificationColumns>[] = [
   {
-    accessorKey: "name",
-    header: "Nombre",
+    accessorKey: "title",
+    header: "Título",
   },
   {
-    accessorKey: "value",
-    header: "Valor",
+    accessorKey: "type",
+    header: "Tipo",
   },
   {
-    accessorKey: "createdAt",
-    header: "Fecha",
+    accessorKey: "startDate",
+    header: "Fecha de Inicio",
   },
   {
     id: "actions",
+    header: "Acciones",
     cell: ({ row }) => <CellAction data={row.original} />,
   },
 ];

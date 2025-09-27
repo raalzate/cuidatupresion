@@ -8,6 +8,8 @@ import { apiClient } from "@/services/api";
 import { NotificationForm } from "./components/notification-form";
 import { EmptyState } from "@/components/shared/empty-state/empty-state";
 
+import { Notifications } from "@prisma/client";
+
 const NotificationPage = () => {
   const params = useParams();
   const notificationId = params?.notificationId;
@@ -21,11 +23,21 @@ const NotificationPage = () => {
       try {
         setLoading(true);
 
-        // const data = await apiClient.get(
-        //   `/users/${userId}/notifications/${notificationId}`
-        // );
+        if (notificationId === "new") return;
 
-        // setNotification(data as never);
+        const data = await apiClient.get<Notifications>(
+          `/users/${userId}/notifications/${notificationId}`
+        );
+
+        console.log({ data });
+
+        setNotification({
+          title: data.title,
+          type: data.type,
+          startDate: new Date(data.startDate),
+          additionalNotes: data.additionalNotes,
+          repeatInterval: data.repeatInterval.toString(),
+        } as never);
       } catch (error) {
         toast.error(error);
       } finally {
