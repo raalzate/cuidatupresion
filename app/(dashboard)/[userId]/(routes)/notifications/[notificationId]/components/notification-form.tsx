@@ -1,13 +1,13 @@
 "use client";
 
+import { AlertCircleIcon, CalendarIcon, Trash } from "lucide-react";
+import { es } from "date-fns/locale";
+import { format } from "date-fns";
 import { toast } from "react-hot-toast";
-import { CalendarIcon, Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
 import * as z from "zod";
 
 import { apiClient } from "@/services/api";
@@ -44,6 +44,8 @@ import {
   NOTIFICATION_TYPE_OPTIONS,
   REPEAT_INTERVAL_OPTIONS,
 } from "../constants";
+import { NotificationPayload } from "../../interfaces";
+import { AppAlert } from "@/components/shared/alert/alert";
 
 const formSchema = z.object({
   title: z
@@ -76,13 +78,13 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? "Editar notificación" : "Crear notificación";
+  const title = initialData ? "Editar recordatorio" : "Crear recordatorio";
   const description = initialData
-    ? "Editar notificación"
-    : "Agregar una nueva notificación";
+    ? "Editar recordatorio"
+    : "Agregar una nueva recordatorio";
   const toastMessage = initialData
-    ? "Notificación actualizada"
-    : "Notificación creada";
+    ? "Recordatorio actualizado"
+    : "Recordatorio creado";
   const action = initialData ? "Guardar cambios" : "Crear";
 
   const form = useForm<NotificationFormValues>({
@@ -127,13 +129,22 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
     try {
       setLoading(true);
 
+      const payload = {
+        ...data,
+        repeatInterval:
+          data.type === "CITA_MEDICA" ? 0 : parseInt(data.repeatInterval),
+      };
+
       if (initialData) {
-        await apiClient.patch(
-          `/api/${params?.userId}/notifications/${params?.notificationId}`,
-          data
+        await apiClient.patch<NotificationPayload>(
+          `/users/${params?.userId}/notifications/${params?.notificationId}`,
+          payload
         );
       } else {
-        await apiClient.post(`/api/${params?.userId}/notifications`, data);
+        await apiClient.post<NotificationPayload>(
+          `/users/${params?.userId}/notifications`,
+          payload
+        );
       }
 
       router.refresh();
@@ -152,7 +163,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
       setLoading(true);
 
       await apiClient.delete(
-        `/api/${params?.userId}/notifications/${params?.notificationId}`
+        `/users/${params?.userId}/notifications/${params?.notificationId}`
       );
 
       router.refresh();
@@ -191,6 +202,16 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
       </div>
 
       <Separator />
+      {form.watch("type") === "CITA_MEDICA" && (
+        <AppAlert
+          shouldApplyClassName={false}
+          icon={<AlertCircleIcon />}
+          title="¡Información! Ha seleccionado 'Cita médica' como tipo de recordatorio"
+          variant="info"
+        >
+          <p>Recomendamos configurar el recordatorio una hora antes.</p>
+        </AppAlert>
+      )}
 
       <Form {...form}>
         <form

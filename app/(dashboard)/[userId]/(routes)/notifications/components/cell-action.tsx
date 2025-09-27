@@ -4,9 +4,9 @@ import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import axios from "axios";
 
 import { AlertModal } from "@/components/shared/alert-modal/alert-modal";
+import { apiClient } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -32,7 +32,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     try {
       setLoading(true);
 
-      await axios.delete(`/api/${params?.userId}/notifications/${data.id}`);
+      await apiClient.delete(
+        `/users/${params?.userId}/notifications/${data.id}`
+      );
 
       router.refresh();
 
