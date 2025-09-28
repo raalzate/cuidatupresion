@@ -43,8 +43,13 @@ export async function POST(
       type,
       startDate,
       additionalNotes,
+      pushToken,
       repeatInterval = 0,
     } = body;
+
+    if (!pushToken) {
+      return new NextResponse("Push token is required", { status: 400 });
+    }
 
     if (!title) {
       return new NextResponse("Title is required", { status: 400 });
@@ -71,6 +76,7 @@ export async function POST(
         startDate,
         repeatInterval,
         additionalNotes,
+        pushToken,
         patientId: userId,
       },
     });

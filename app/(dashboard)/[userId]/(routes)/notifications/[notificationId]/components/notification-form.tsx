@@ -39,6 +39,7 @@ import {
 import { Separator } from "@/components/shared/separator/separator";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
+import { useAlertStore } from "@/stores/alert/alert.store";
 
 import {
   NOTIFICATION_TYPE_OPTIONS,
@@ -76,13 +77,15 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? "Editar notificación" : "Crear notificación";
+  const pushToken = useAlertStore((state) => state.token);
+
+  const title = initialData ? "Editar recordatorio" : "Crear recordatorio";
   const description = initialData
-    ? "Editar notificación"
-    : "Agregar una nueva notificación";
+    ? "Editar recordatorio"
+    : "Agregar un nuevo recordatorio";
   const toastMessage = initialData
-    ? "Notificación actualizada"
-    : "Notificación creada";
+    ? "Recordatorio actualizado"
+    : "Recordatorio creado";
   const action = initialData ? "Guardar cambios" : "Crear";
 
   const form = useForm<NotificationFormValues>({
@@ -144,10 +147,10 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
           notificationPayload
         );
       } else {
-        await apiClient.post(
-          `/users/${params?.userId}/notifications`,
-          notificationPayload
-        );
+        await apiClient.post(`/users/${params?.userId}/notifications`, {
+          ...notificationPayload,
+          pushToken,
+        });
       }
 
       router.refresh();
@@ -172,7 +175,7 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
       router.refresh();
       router.push(`/${params?.userId}/notifications`);
 
-      toast.success("Notificación eliminada.");
+      toast.success("Recordatorio eliminado.");
     } catch (error) {
       toast.error(`${error.response?.data}`);
     } finally {
