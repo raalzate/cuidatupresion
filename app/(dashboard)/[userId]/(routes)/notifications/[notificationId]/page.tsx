@@ -29,8 +29,6 @@ const NotificationPage = () => {
           `/users/${userId}/notifications/${notificationId}`
         );
 
-        console.log({ data });
-
         setNotification({
           title: data.title,
           type: data.type,

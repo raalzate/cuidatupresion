@@ -11,10 +11,12 @@ import { Separator } from "@/components/shared/separator/separator";
 
 interface NotificationsClientProps {
   data: NotificationColumns[];
+  onRefetch: () => void;
 }
 
 export const NotificationsClient: React.FC<NotificationsClientProps> = ({
   data,
+  onRefetch,
 }) => {
   const router = useRouter();
   const params = useParams();
@@ -37,7 +39,7 @@ export const NotificationsClient: React.FC<NotificationsClientProps> = ({
 
       <Separator />
 
-      <DataTable searchKey="title" columns={columns} data={data} />
+      <DataTable searchKey="title" columns={columns(onRefetch)} data={data} />
     </>
   );
 };

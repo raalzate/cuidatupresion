@@ -13,7 +13,9 @@ export type NotificationColumns = {
   startDate: string;
 };
 
-export const columns: ColumnDef<NotificationColumns>[] = [
+export const columns = (
+  onRefetch: () => void
+): ColumnDef<NotificationColumns>[] => [
   {
     accessorKey: "title",
     header: "Título",
@@ -29,6 +31,6 @@ export const columns: ColumnDef<NotificationColumns>[] = [
   {
     id: "actions",
     header: "Acciones",
-    cell: ({ row }) => <CellAction data={row.original} />,
+    cell: ({ row }) => <CellAction data={row.original} onRefetch={onRefetch} />,
   },
 ];

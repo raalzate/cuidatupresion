@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 import { toast } from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
 import { NotificationsClient } from "./components/client";
@@ -17,38 +17,35 @@ const NotificationsPage = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        setLoading(true);
+  const fetchNotifications = useCallback(async () => {
+    try {
+      setLoading(true);
 
-        const data = await apiClient.get<Notifications[]>(
-          `/users/${params?.userId}/notifications`
-        );
+      const data = await apiClient.get<Notifications[]>(
+        `/users/${params?.userId}/notifications`
+      );
 
-        const notificationsData = data.map((notification) => ({
-          id: notification.id,
-          title: notification.title,
-          type: notification.type.replaceAll("_", " "),
-          repeatInterval: notification.repeatInterval,
-          additionalNotes: notification.additionalNotes,
-          startDate: format(
-            new Date(notification.startDate),
-            "dd/MM/yyyy HH:mm"
-          ),
-        }));
+      const notificationsData = data.map((notification) => ({
+        id: notification.id,
+        title: notification.title,
+        type: notification.type.replaceAll("_", " "),
+        repeatInterval: notification.repeatInterval,
+        additionalNotes: notification.additionalNotes,
+        startDate: format(new Date(notification.startDate), "dd/MM/yyyy HH:mm"),
+      }));
 
-        setNotifications(notificationsData as never);
-      } catch (error) {
-        console.log(error);
-        toast.error("Error al obtener las notificaciones");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNotifications();
+      setNotifications(notificationsData as never);
+    } catch (error) {
+      console.log(error);
+      toast.error("Error al obtener las notificaciones");
+    } finally {
+      setLoading(false);
+    }
   }, [params?.userId]);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
 
   if (loading) {
     return (
@@ -68,7 +65,10 @@ const NotificationsPage = () => {
   return (
     <div className="flex-col">
       <div className="flex-q space-y-4 p-8 pt-6">
-        <NotificationsClient data={notifications} />
+        <NotificationsClient
+          data={notifications}
+          onRefetch={fetchNotifications}
+        />
       </div>
     </div>
   );

@@ -19,9 +19,10 @@ import { NotificationColumns } from "./columns";
 
 interface CellActionProps {
   data: NotificationColumns;
+  onRefetch: () => void;
 }
 
-export const CellAction: React.FC<CellActionProps> = ({ data }) => {
+export const CellAction: React.FC<CellActionProps> = ({ data, onRefetch }) => {
   const router = useRouter();
   const params = useParams();
 
@@ -36,8 +37,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         `/users/${params?.userId}/notifications/${data.id}`
       );
 
-      router.refresh();
-
+      onRefetch();
       toast.success("Notificación eliminada.");
     } catch (error) {
       toast.error(`${error.response?.data}`);

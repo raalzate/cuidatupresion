@@ -99,7 +99,7 @@ export function NavUser({
               <DropdownMenuItem asChild>
                 <Link href={`/${user.id}/notifications`}>
                   <Bell />
-                  Notificaciones
+                  Recordatorios
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
