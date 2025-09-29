@@ -1,7 +1,7 @@
 "use client";
 
+import { AlertCircleIcon, CalendarIcon, Trash } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { CalendarIcon, Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,6 +11,7 @@ import { es } from "date-fns/locale";
 import * as z from "zod";
 
 import { apiClient } from "@/services/api";
+import { AppAlert } from "@/components/shared/alert/alert";
 import { AlertModal } from "@/components/shared/alert-modal/alert-modal";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -216,6 +217,20 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
       </div>
 
       <Separator />
+
+      {form.watch("type") === "CITA_MEDICA" && (
+        <AppAlert
+          icon={<AlertCircleIcon />}
+          shouldApplyClassName={false}
+          title="¡Atención! Ha seleccionado un recordatorio de cita médica."
+          variant="info"
+        >
+          <p>
+            Para las citas médicas, recomendamos establecer el recordatorio una
+            hora antes de la cita.
+          </p>
+        </AppAlert>
+      )}
 
       <Form {...form}>
         <form

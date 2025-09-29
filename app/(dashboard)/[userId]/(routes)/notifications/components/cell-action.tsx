@@ -38,7 +38,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data, onRefetch }) => {
       await apiClient.delete(`/users/${userId}/notifications/${data.id}`);
 
       onRefetch();
-      toast.success("Notificación eliminada.");
+      toast.success("Recordatorio eliminado.");
     } catch (error) {
       toast.error(`${error.response?.data}`);
     } finally {
