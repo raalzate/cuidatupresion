@@ -1,7 +1,7 @@
 "use client";
 
-import { AlertCircleIcon } from "lucide-react";
-import { useEffect } from "react";
+import { AlertCircleIcon, DownloadIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { getToken } from "firebase/messaging";
 
 import { AppAlert } from "@/components/shared/alert/alert";
@@ -15,6 +15,13 @@ import {
 } from "@/components/ui/sidebar";
 import { useAlertStore } from "@/stores/alert/alert.store";
 import { messaging } from "@/lib/firebase";
+import { Button } from "@/components/ui/button";
+
+// PWA Install Prompt Event interface
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
 
 export default function DashboardLayout({
   children,
@@ -36,7 +43,12 @@ export default function DashboardLayout({
     (state) => state.setNotificationPermission
   );
 
+  // 🔹 Estado para el botón de instalación PWA
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+
   useEffect(() => {
+    // Registro del service worker (Firebase + PWA)
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
@@ -48,8 +60,22 @@ export default function DashboardLayout({
         });
     }
 
+    // 🔹 Captura el evento beforeinstallprompt (para PWA)
+    const handler = (e: BeforeInstallPromptEvent) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallButton(true);
+    };
+
+    window.addEventListener("beforeinstallprompt", handler);
+
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  useEffect(() => {
+    // Configuración de notificaciones con FCM
     const setupNotifications = async () => {
-            let currentPermission = Notification.permission;
+      let currentPermission = Notification.permission;
 
       if (!messaging || !("Notification" in window)) {
         setNotificationPermission("denied");
@@ -82,35 +108,59 @@ export default function DashboardLayout({
     setupNotifications();
   }, [setToken, setNotificationPermission]);
 
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted") {
+      console.log("✅ Usuario instaló la app");
+    } else {
+      console.log("❌ Usuario canceló instalación");
+    }
+    setDeferredPrompt(null);
+    setShowInstallButton(false);
+  };
+
   return (
     <SidebarProvider>
       <DashboardSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            <DashboardBreadcrumb />
-          </div>
+        <header className="flex h-16 shrink-0 items-center gap-2 px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+          <DashboardBreadcrumb />
+
+          {showInstallButton && (
+            <Button
+              onClick={handleInstall}
+              variant="outline"
+              size="sm"
+              className="ml-auto flex items-center gap-2"
+            >
+              <DownloadIcon className="w-4 h-4" />
+              Instalar App
+            </Button>
+          )}
         </header>
 
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {notificationPermission!== "default" && notificationPermission !== "granted" && (
-            <AppAlert
-              icon={<AlertCircleIcon />}
-              title="Activar notificaciones"
-              variant="info"
-            >
-              <p>
-                Para recibir alertas importantes sobre su salud en tiempo real,
-                por favor active las notificaciones en la configuración de su
-                navegador.
-              </p>
-            </AppAlert>
-          )}
+          {notificationPermission !== "default" &&
+            notificationPermission !== "granted" && (
+              <AppAlert
+                icon={<AlertCircleIcon />}
+                title="Activar notificaciones"
+                variant="info"
+              >
+                <p>
+                  Para recibir alertas importantes sobre su salud en tiempo
+                  real, por favor active las notificaciones en la configuración
+                  de su navegador.
+                </p>
+              </AppAlert>
+            )}
 
           {showHypotensionAlert && (
             <AppAlert

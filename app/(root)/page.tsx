@@ -29,7 +29,6 @@ export default function Home() {
         });
     }
 
-    // Pedir permiso para notificaciones y obtener token
     if (messaging) {
       // Escuchar mensajes en primer plano
       onMessage(messaging, (payload) => {
