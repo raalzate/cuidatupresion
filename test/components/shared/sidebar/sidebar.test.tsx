@@ -4,28 +4,12 @@ import React from "react";
 import { AppSidebar } from "../../../../components/shared/sidebar/sidebar";
 
 jest.mock("lucide-react", () => ({
-  AudioWaveform: ({
+  HeartPlus: ({
     "data-testid": testId,
     ...props
   }: React.SVGProps<SVGSVGElement> & { "data-testid"?: string }) => (
-    <svg data-testid={testId || "audio-waveform-icon"} {...props}>
-      <title>AudioWaveform</title>
-    </svg>
-  ),
-  Command: ({
-    "data-testid": testId,
-    ...props
-  }: React.SVGProps<SVGSVGElement> & { "data-testid"?: string }) => (
-    <svg data-testid={testId || "command-icon"} {...props}>
-      <title>Command</title>
-    </svg>
-  ),
-  GalleryVerticalEnd: ({
-    "data-testid": testId,
-    ...props
-  }: React.SVGProps<SVGSVGElement> & { "data-testid"?: string }) => (
-    <svg data-testid={testId || "gallery-vertical-end-icon"} {...props}>
-      <title>GalleryVerticalEnd</title>
+    <svg data-testid={testId || "heart-plus-icon"} {...props}>
+      <title>HeartPlus</title>
     </svg>
   ),
 }));
@@ -89,23 +73,19 @@ jest.mock("../../../../components/ui/nav-user", () => ({
   ),
 }));
 
-jest.mock("../../../../components/ui/team-switcher", () => ({
-  TeamSwitcher: ({
-    teams,
+jest.mock("../../../../components/shared/app-info/app-info", () => ({
+  AppInfo: ({
+    data,
     ...props
   }: {
-    teams?: Array<{ name: string; plan: string; logo?: React.ComponentType }>;
+    data?: { name: string; plan: string; logo?: React.ComponentType };
   } & React.HTMLAttributes<HTMLDivElement>) => (
-    <div data-testid="mock-team-switcher" {...props}>
-      {teams?.map((team, index) => (
-        <div key={index} data-testid={`team-${index}`}>
-          <span data-testid={`team-name-${index}`}>{team.name}</span>
+    <div data-testid="mock-app-info" {...props}>
+      <span data-testid="app-name">{data?.name}</span>
 
-          <span data-testid={`team-plan-${index}`}>{team.plan}</span>
+      <span data-testid="app-plan">{data?.plan}</span>
 
-          {team.logo && <team.logo data-testid={`team-logo-${index}`} />}
-        </div>
-      ))}
+      {data?.logo && <data.logo data-testid="app-logo" />}
     </div>
   ),
 }));
@@ -221,10 +201,10 @@ describe("AppSidebar", () => {
       expect(sidebar).toHaveAttribute("data-collapsible", "icon");
     });
 
-    it("should render TeamSwitcher in header", () => {
+    it("should render AppInfo in header", () => {
       render(<AppSidebar user={mockUser} navMain={mockNavMain} />);
 
-      expect(screen.getByTestId("mock-team-switcher")).toBeInTheDocument();
+      expect(screen.getByTestId("mock-app-info")).toBeInTheDocument();
     });
 
     it("should render NavMain in content", () => {
@@ -347,27 +327,28 @@ describe("AppSidebar", () => {
     });
   });
 
-  describe("TeamSwitcher Data", () => {
-    it("should render predefined teams data", () => {
+  describe("AppInfo Data", () => {
+    it("should render app information", () => {
       render(<AppSidebar user={mockUser} navMain={mockNavMain} />);
 
-      expect(screen.getByTestId("team-name-0")).toHaveTextContent("Acme Inc");
-      expect(screen.getByTestId("team-plan-0")).toHaveTextContent("Enterprise");
-      expect(screen.getByTestId("team-logo-0")).toBeInTheDocument();
-
-      expect(screen.getByTestId("team-name-1")).toHaveTextContent("Acme Corp.");
-      expect(screen.getByTestId("team-plan-1")).toHaveTextContent("Startup");
-
-      expect(screen.getByTestId("team-name-2")).toHaveTextContent("Evil Corp.");
-      expect(screen.getByTestId("team-plan-2")).toHaveTextContent("Free");
+      expect(screen.getByTestId("app-name")).toHaveTextContent(
+        "Cuida tu presión"
+      );
+      expect(screen.getByTestId("app-plan")).toHaveTextContent(
+        "Salud cardiovascular"
+      );
+      expect(screen.getByTestId("app-logo")).toBeInTheDocument();
     });
 
-    it("should render team logos using Lucide icons", () => {
+    it("should render app logo using HeartPlus icon", () => {
       render(<AppSidebar user={mockUser} navMain={mockNavMain} />);
 
-      expect(screen.getByTestId("team-logo-0")).toBeInTheDocument();
-      expect(screen.getByTestId("team-logo-1")).toBeInTheDocument();
-      expect(screen.getByTestId("team-logo-2")).toBeInTheDocument();
+      expect(screen.getByTestId("app-logo")).toBeInTheDocument();
+
+      const appLogo = screen.getByTestId("app-logo");
+
+      expect(appLogo.tagName).toBe("svg");
+      expect(appLogo).toHaveTextContent("HeartPlus");
     });
   });
 
@@ -428,7 +409,7 @@ describe("AppSidebar", () => {
       expect(sidebar).toContainElement(footer);
       expect(sidebar).toContainElement(rail);
 
-      expect(header).toContainElement(screen.getByTestId("mock-team-switcher"));
+      expect(header).toContainElement(screen.getByTestId("mock-app-info"));
       expect(content).toContainElement(screen.getByTestId("mock-nav-main"));
       expect(footer).toContainElement(screen.getByTestId("mock-nav-user"));
     });
