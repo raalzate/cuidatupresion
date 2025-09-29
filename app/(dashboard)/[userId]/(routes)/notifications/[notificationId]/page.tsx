@@ -12,8 +12,9 @@ import { Notifications } from "@prisma/client";
 
 const NotificationPage = () => {
   const params = useParams();
-  const notificationId = params?.notificationId;
+
   const userId = `${params?.userId}`;
+  const notificationId = `${params?.notificationId}`;
 
   const [loading, setLoading] = useState<boolean>(true);
   const [notification, setNotification] = useState(null);
@@ -44,7 +45,7 @@ const NotificationPage = () => {
     };
 
     if (userId) {
-      fetchNotification();
+      void fetchNotification();
     }
   }, [userId, notificationId]);
 

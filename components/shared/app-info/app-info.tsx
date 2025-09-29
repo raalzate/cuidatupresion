@@ -8,19 +8,15 @@ import {
   SidebarMenuItem,
 } from "../../ui/sidebar";
 
-export function AppInfo({
-  data,
-}: {
+interface AppInfoProps {
   data: {
     name: string;
     logo: React.ElementType;
     plan: string;
   };
-}) {
-  if (!data) {
-    return null;
-  }
+}
 
+export const AppInfo: React.FC<AppInfoProps> = ({ data }) => {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -41,4 +37,4 @@ export function AppInfo({
       </SidebarMenuItem>
     </SidebarMenu>
   );
-}
+};

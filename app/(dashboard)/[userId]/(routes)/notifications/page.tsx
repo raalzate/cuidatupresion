@@ -14,6 +14,8 @@ import { EmptyState } from "@/components/shared/empty-state/empty-state";
 const NotificationsPage = () => {
   const params = useParams();
 
+  const userId = `${params?.userId}`;
+
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,7 +24,7 @@ const NotificationsPage = () => {
       setLoading(true);
 
       const data = await apiClient.get<Notifications[]>(
-        `/users/${params?.userId}/notifications`
+        `/users/${userId}/notifications`
       );
 
       const notificationsData = data.map((notification) => ({
@@ -41,10 +43,10 @@ const NotificationsPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [params?.userId]);
+  }, [userId]);
 
   useEffect(() => {
-    fetchNotifications();
+    void fetchNotifications();
   }, [fetchNotifications]);
 
   if (loading) {
@@ -52,7 +54,7 @@ const NotificationsPage = () => {
       <div className="flex-col">
         <div className="flex-1 space-y-4 p-8 pt-6">
           <EmptyState
-            ctaHref={`/${params?.userId}/measurement`}
+            ctaHref={`/${userId}/measurement`}
             ctaLabel="Añadir medición"
             subtitle="Pronto podrás ver tus recordatorios."
             title="Cargando tus recordatorios..."

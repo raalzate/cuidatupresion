@@ -74,6 +74,8 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
   const params = useParams();
   const router = useRouter();
 
+  const userId = `${params?.userId}`;
+
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -115,9 +117,9 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
     const newDate = new Date(currentDate);
 
     if (type === "hour") {
-      const hour = parseInt(value, 10);
+      const hour = Number.parseInt(value, 10);
       newDate.setHours(newDate.getHours() >= 12 ? hour + 12 : hour);
-    } else if (type === "ampm") {
+    } else {
       const hours = newDate.getHours();
       if (value === "AM" && hours >= 12) {
         newDate.setHours(hours - 12);
@@ -138,23 +140,25 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
       const notificationPayload = {
         ...data,
         repeatInterval:
-          data.type === "CITA_MEDICA" ? 0 : parseInt(data.repeatInterval),
+          data.type === "CITA_MEDICA"
+            ? 0
+            : Number.parseInt(data.repeatInterval),
       };
 
       if (initialData) {
         await apiClient.patch(
-          `/users/${params?.userId}/notifications/${params?.notificationId}`,
+          `/users/${userId}/notifications/${params?.notificationId}`,
           notificationPayload
         );
       } else {
-        await apiClient.post(`/users/${params?.userId}/notifications`, {
+        await apiClient.post(`/users/${userId}/notifications`, {
           ...notificationPayload,
           pushToken,
         });
       }
 
       router.refresh();
-      router.push(`/${params?.userId}/notifications`);
+      router.push(`/${userId}/notifications`);
 
       toast.success(toastMessage);
     } catch (error) {
@@ -169,11 +173,11 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
       setLoading(true);
 
       await apiClient.delete(
-        `/users/${params?.userId}/notifications/${params?.notificationId}`
+        `/users/${userId}/notifications/${params?.notificationId}`
       );
 
       router.refresh();
-      router.push(`/${params?.userId}/notifications`);
+      router.push(`/${userId}/notifications`);
 
       toast.success("Recordatorio eliminado.");
     } catch (error) {
@@ -188,7 +192,9 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
     <>
       <AlertModal
         isOpen={open}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+        }}
         onConfirm={onDelete}
         loading={loading}
       />
@@ -200,7 +206,9 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
           <Button
             variant="destructive"
             size="icon"
-            onClick={() => setOpen(true)}
+            onClick={() => {
+              setOpen(true);
+            }}
           >
             <Trash className="h-4 w-4" />
           </Button>
@@ -363,12 +371,12 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                                           : "ghost"
                                       }
                                       className="sm:w-full shrink-0 aspect-square"
-                                      onClick={() =>
+                                      onClick={() => {
                                         handleTimeChange(
                                           "hour",
                                           hour.toString()
-                                        )
-                                      }
+                                        );
+                                      }}
                                     >
                                       {hour}
                                     </Button>
@@ -396,9 +404,9 @@ export const NotificationForm: React.FC<NotificationFormProps> = ({
                                         : "ghost"
                                     }
                                     className="sm:w-full shrink-0 aspect-square"
-                                    onClick={() =>
-                                      handleTimeChange("ampm", ampm)
-                                    }
+                                    onClick={() => {
+                                      handleTimeChange("ampm", ampm);
+                                    }}
                                   >
                                     {ampm}
                                   </Button>

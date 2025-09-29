@@ -26,6 +26,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data, onRefetch }) => {
   const router = useRouter();
   const params = useParams();
 
+  const userId = `${params?.userId}`;
+
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -33,9 +35,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data, onRefetch }) => {
     try {
       setLoading(true);
 
-      await apiClient.delete(
-        `/users/${params?.userId}/notifications/${data.id}`
-      );
+      await apiClient.delete(`/users/${userId}/notifications/${data.id}`);
 
       onRefetch();
       toast.success("Notificación eliminada.");
@@ -51,7 +51,9 @@ export const CellAction: React.FC<CellActionProps> = ({ data, onRefetch }) => {
     <>
       <AlertModal
         isOpen={open}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+        }}
         onConfirm={onDelete}
         loading={loading}
       />
@@ -69,15 +71,19 @@ export const CellAction: React.FC<CellActionProps> = ({ data, onRefetch }) => {
           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
 
           <DropdownMenuItem
-            onClick={() =>
-              router.push(`/${params?.userId}/notifications/${data.id}`)
-            }
+            onClick={() => {
+              router.push(`/${userId}/notifications/${data.id}`);
+            }}
           >
             <Edit className="mr-2 h-4 w-4" />
             Actualizar
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem
+            onClick={() => {
+              setOpen(true);
+            }}
+          >
             <Trash className="mr-2 h-4 w-4" />
             Eliminar
           </DropdownMenuItem>

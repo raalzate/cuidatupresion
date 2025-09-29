@@ -21,6 +21,8 @@ export const NotificationsClient: React.FC<NotificationsClientProps> = ({
   const router = useRouter();
   const params = useParams();
 
+  const userId = `${params?.userId}`;
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -30,7 +32,9 @@ export const NotificationsClient: React.FC<NotificationsClientProps> = ({
         />
 
         <Button
-          onClick={() => router.push(`/${params?.userId}/notifications/new`)}
+          onClick={() => {
+            router.push(`/${userId}/notifications/new`);
+          }}
         >
           <Plus className="mr-2 h-4 w-4" />
           Agregar
