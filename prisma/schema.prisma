@@ -96,6 +96,7 @@ model Patient {
   relevantConditions PatientRelevantConditions[]
   medications PatientMedications[]
   measurements Measurements[]
+  notifications Notifications[]
   doctorId String
   doctor Doctor @relation(fields: [doctorId], references: [id])
   name String
@@ -117,4 +118,26 @@ model Doctor {
   patients Patient[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum NotificationType {
+  MEDICAMENTO
+  CITA_MEDICA
+  TOMA_PRESION
+}
+
+model Notifications {
+  id String @id @default(uuid())
+  patientId String
+  patient Patient @relation(fields: [patientId], references: [id])
+  type NotificationType
+  title String
+  startDate DateTime
+  repeatInterval Int @default(0)
+  additionalNotes String
+  pushToken String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index(patientId)
 }

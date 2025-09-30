@@ -1,13 +1,9 @@
 "use client";
 
 import * as React from "react";
-import {
-  AudioWaveform,
-  Command,
-  GalleryVerticalEnd,
-  LucideProps,
-} from "lucide-react";
+import { HeartPlus, LucideProps } from "lucide-react";
 
+import { AppInfo } from "../app-info/app-info";
 import { NavMain } from "../../ui/nav-main";
 import { NavUser } from "../../ui/nav-user";
 import {
@@ -17,13 +13,13 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "../../ui/sidebar";
-import { TeamSwitcher } from "../../ui/team-switcher";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user: {
     name: string;
     email: string;
     avatar: string;
+    id: string;
   };
   navMain: Array<{
     title: string;
@@ -40,30 +36,16 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 const data = {
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
+  name: "Cuida tu presión",
+  logo: HeartPlus,
+  plan: "Salud cardiovascular",
 };
 
 export const AppSidebar = ({ user, navMain, ...props }: AppSidebarProps) => {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <AppInfo data={data} />
       </SidebarHeader>
 
       <SidebarContent>

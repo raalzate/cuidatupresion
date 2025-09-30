@@ -10,10 +10,10 @@ interface UserProps {
   email: string;
   avatar: string;
   name: string;
+  id: string;
 }
 
 const data = {
-
   navMain: [
     {
       title: "Info",
@@ -25,7 +25,7 @@ const data = {
           title: "Medición",
           url: "/measurement",
         },
-    
+
         {
           title: "Historica",
           url: "/history",
@@ -37,8 +37,6 @@ const data = {
         },
       ],
     },
-    
-   
   ],
 };
 
@@ -50,6 +48,7 @@ export function DashboardSidebar() {
     email: "",
     avatar: "",
     name: "",
+    id: "",
   });
 
   useEffect(() => {
@@ -60,13 +59,14 @@ export function DashboardSidebar() {
         email: session?.user?.email ?? "",
         avatar: session?.user?.image ?? "",
         name: session?.user?.name ?? "",
+        id: currentUser?.id ?? "",
       });
     }
-  }, [status, session]);
+  }, [status, session, currentUser?.id]);
 
   data.navMain[0].items[0].url = `/${userId}/measurement`;
   data.navMain[0].items[1].url = `/${userId}/history`;
   data.navMain[0].items[2].url = `/${userId}/graph`;
 
-  return <AppSidebar user={user} navMain={data.navMain}  />;
+  return <AppSidebar user={user} navMain={data.navMain} />;
 }
