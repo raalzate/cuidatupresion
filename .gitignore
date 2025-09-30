@@ -11,6 +11,7 @@ yarn.lock
 out/
 build/
 .swc/
+.idx/
 
 # Archivos de entorno
 .env
