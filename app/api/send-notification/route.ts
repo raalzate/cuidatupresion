@@ -1,7 +1,18 @@
 import { NextResponse } from "next/server";
 import { adminMessaging } from "@/lib/firebase-admin";
 import prismadb from "@/lib/prismadb";
+import { formatInTimeZone } from 'date-fns-tz'
+
 import { NotificationType } from "@prisma/client";
+
+type NotificationRow = {
+  id: string;
+  type: NotificationType;
+  title: string;
+  additionalNotes: string;
+  pushToken: string;
+  startDate: Date;
+};
 
 const getNotificationMessage = (
   notificationType: NotificationType,
@@ -34,30 +45,35 @@ const getNotificationMessage = (
 
 export async function GET() {
   try {
-    const now = new Date();
-    const colombiaTimezone = "America/Bogota";
-    const nowInColombia = new Date(now.toLocaleString("en-US", { timeZone: colombiaTimezone }));
 
-    const notifications = await prismadb.notifications.findMany({
-      where: {
-        startDate: {
-          lte: nowInColombia,
-        },
-      },
-    });
+  const colombiaTimezone = "America/Bogota";
+  const currentHour = parseInt(formatInTimeZone(new Date(), colombiaTimezone, 'HH'), 10);
+
+  const notifications = await prismadb.$queryRaw<NotificationRow[]>`
+    SELECT *
+    FROM "Notifications"
+    WHERE EXTRACT(HOUR FROM "startDate" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Bogota') = ${currentHour};
+  `;
+    const messages: { token: string; message: { title: string; body: string } }[] = [];
 
     for (const notification of notifications) {
       if (notification.pushToken) {
+        const notificationContent = getNotificationMessage(
+          notification.type,
+          notification.title,
+          notification.additionalNotes
+        );
+
         const message = {
           token: notification.pushToken,
-          notification: getNotificationMessage(
-            notification.type,
-            notification.title,
-            notification.additionalNotes
-          ),
+          notification: notificationContent,
         };
-
+        
+        messages.push({
+          token: notification.pushToken, message: notificationContent
+        });
         await adminMessaging.send(message);
+        
 
         if (notification.type === NotificationType.CITA_MEDICA) {
           await prismadb.notifications.delete({
@@ -69,7 +85,7 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({ success: true, message: "Notifications sent" });
+    return NextResponse.json({ success: true, messages });
   } catch (error) {
     console.error("Error sending push:", error);
     return NextResponse.json(
