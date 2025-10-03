@@ -22,7 +22,10 @@ class ApiClient {
     return headers;
   }
 
-  async get<T>(endpoint: string, includeAuth = true): Promise<T> {
+  async get<TResponse>(
+    endpoint: string,
+    includeAuth = true
+  ): Promise<TResponse> {
     const headers = await this.getHeaders(includeAuth);
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: "GET",
@@ -36,7 +39,11 @@ class ApiClient {
     return response.json();
   }
 
-  async post<T>(endpoint: string, body: T, includeAuth = true): Promise<T> {
+  async post<TResponse, TBody = unknown>(
+    endpoint: string,
+    body: TBody,
+    includeAuth = true
+  ): Promise<TResponse> {
     const headers = await this.getHeaders(includeAuth);
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: "POST",
@@ -51,7 +58,11 @@ class ApiClient {
     return response.json();
   }
 
-  async patch<T>(endpoint: string, body: T, includeAuth = true): Promise<T> {
+  async patch<TResponse, TBody = unknown>(
+    endpoint: string,
+    body: TBody,
+    includeAuth = true
+  ): Promise<TResponse> {
     const headers = await this.getHeaders(includeAuth);
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: "PATCH",
@@ -66,7 +77,10 @@ class ApiClient {
     return response.json();
   }
 
-  async delete<T>(endpoint: string, includeAuth = true): Promise<T> {
+  async delete<TResponse>(
+    endpoint: string,
+    includeAuth = true
+  ): Promise<TResponse> {
     const headers = await this.getHeaders(includeAuth);
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: "DELETE",

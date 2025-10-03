@@ -15,7 +15,7 @@ type MeasurementResponse = Measurements & { tags: MeasurementTagsProps[] };
 
 const HistoryPage = () => {
   const params = useParams();
-  const userId = params?.userId;
+  const userId = `${params?.userId}`;
 
   const [measurements, setMeasurements] = useState<MeasurementResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -85,7 +85,7 @@ const HistoryPage = () => {
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <MeasurementClient data={formattedMeasurements} />
+        <MeasurementClient data={formattedMeasurements} userId={userId} />
       </div>
     </div>
   );
