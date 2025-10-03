@@ -26,6 +26,6 @@ export const config = {
      * This is to protect all routes by default, while keeping public assets
      * and authentication pages accessible.
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|images|icons|sign-in|manifest.json|sw.js|firebase-messaging-sw.js|workbox-.*\\.js|$).*)',
+    "/((?!api|_next/static|_next/image|favicon.ico|images|icons|sign-in|shared|manifest.json|sw.js|firebase-messaging-sw.js|workbox-.*\\.js|$).*)",
   ],
 };
