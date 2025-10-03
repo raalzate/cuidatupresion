@@ -1,32 +1,39 @@
 "use client";
 
+import { es } from "date-fns/locale";
+import { format } from "date-fns";
+import { Heart, Activity } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+
+import { apiClient } from "@/services/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/empty-state/empty-state";
 import { Separator } from "@/components/shared/separator/separator";
-import { LoaderIcon, Heart, Activity } from "lucide-react";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import {
+  isHypertensiveCrisis,
+  isHypotensiveCrisis,
+} from "@/utils/bloodPressure";
 
 interface Measurement {
-  id: string;
-  heartRate: number;
-  systolicPressure: number;
-  diastolicPressure: number;
-  tags: string;
-  date: string;
   createdAt: string;
+  date: string;
+  diastolicPressure: number;
+  heartRate: number;
+  id: string;
+  systolicPressure: number;
+  tags: string;
 }
 
 interface UserInfo {
-  name: string;
   email: string;
+  name: string;
 }
 
 interface SharedData {
+  measurements: Measurement[];
   success: boolean;
   user: UserInfo;
-  measurements: Measurement[];
   tokenInfo: {
     userId: string;
     issuedAt: string;
@@ -47,22 +54,12 @@ export default function SharedMeasurementsPage() {
 
     const fetchSharedData = async () => {
       try {
-        const response = await fetch("/api/check-shared-measurement", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ token }),
-        });
+        const response = await apiClient.post<SharedData>(
+          "/check-shared-measurement",
+          { token }
+        );
 
-        const result = await response.json();
-
-        if (!response.ok) {
-          setError(result.error || "Error al cargar los datos");
-          return;
-        }
-
-        setData(result);
+        setData(response);
       } catch {
         setError("Error de conexión");
       } finally {
@@ -75,10 +72,12 @@ export default function SharedMeasurementsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <LoaderIcon className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Cargando datos compartidos...</p>
+      <div className="flex-col">
+        <div className="flex-1 space-y-4 p-8 pt-6">
+          <EmptyState
+            subtitle="Pronto podrás ver los datos compartidos."
+            title="Cargando datos compartidos..."
+          />
         </div>
       </div>
     );
@@ -91,6 +90,7 @@ export default function SharedMeasurementsPage() {
           <CardHeader>
             <CardTitle className="text-center text-red-600">Error</CardTitle>
           </CardHeader>
+
           <CardContent>
             <p className="text-center text-muted-foreground">{error}</p>
           </CardContent>
@@ -104,14 +104,15 @@ export default function SharedMeasurementsPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-4xl">
-        {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Historial Médico Compartido
           </h1>
+
           <p className="text-muted-foreground">
             Datos de presión arterial de <strong>{data.user.name}</strong>
           </p>
+
           <p className="text-sm text-muted-foreground mt-2">
             Enlace válido hasta:{" "}
             {format(
@@ -122,15 +123,16 @@ export default function SharedMeasurementsPage() {
           </p>
         </div>
 
-        {/* Summary Cards */}
         <div className="grid md:grid-cols-3 gap-4 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 Total Mediciones
               </CardTitle>
+
               <Activity className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
+
             <CardContent>
               <div className="text-2xl font-bold">
                 {data.measurements.length}
@@ -143,14 +145,17 @@ export default function SharedMeasurementsPage() {
               <CardTitle className="text-sm font-medium">
                 Última Medición
               </CardTitle>
+
               <Heart className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
+
             <CardContent>
               <div className="text-2xl font-bold">
                 {data.measurements.length > 0
                   ? `${data.measurements[0].systolicPressure}/${data.measurements[0].diastolicPressure}`
                   : "N/A"}
               </div>
+
               <p className="text-xs text-muted-foreground">
                 {data.measurements.length > 0 && data.measurements[0].date}
               </p>
@@ -162,8 +167,10 @@ export default function SharedMeasurementsPage() {
               <CardTitle className="text-sm font-medium">
                 Frecuencia Cardíaca
               </CardTitle>
+
               <Heart className="h-4 w-4 text-red-500" />
             </CardHeader>
+
             <CardContent>
               <div className="text-2xl font-bold">
                 {data.measurements.length > 0
@@ -174,11 +181,11 @@ export default function SharedMeasurementsPage() {
           </Card>
         </div>
 
-        {/* Measurements List */}
         <Card>
           <CardHeader>
             <CardTitle>Historial de Mediciones</CardTitle>
           </CardHeader>
+
           <CardContent>
             {data.measurements.length === 0 ? (
               <p className="text-center text-muted-foreground py-8">
@@ -191,41 +198,67 @@ export default function SharedMeasurementsPage() {
                     <div className="flex items-center justify-between py-4">
                       <div className="space-y-1">
                         <div className="flex items-center gap-4">
-                          <div className="text-lg font-semibold">
+                          <div
+                            className={`text-lg font-semibold ${
+                              isHypertensiveCrisis(
+                                measurement.systolicPressure,
+                                measurement.diastolicPressure
+                              )
+                                ? "text-red-500"
+                                : isHypotensiveCrisis(
+                                    measurement.systolicPressure,
+                                    measurement.diastolicPressure
+                                  )
+                                ? "text-blue-700"
+                                : ""
+                            }`}
+                          >
                             {measurement.systolicPressure}/
                             {measurement.diastolicPressure} mmHg
                           </div>
+
                           <div className="text-sm text-muted-foreground">
                             {measurement.heartRate} bpm
                           </div>
                         </div>
+
                         <div className="text-sm text-muted-foreground">
                           {measurement.date}
                         </div>
+
                         {measurement.tags && (
-                          <div className="text-sm text-blue-600">
+                          <div className="text-sm">
                             Etiquetas: {measurement.tags}
                           </div>
                         )}
                       </div>
+
                       <div className="flex items-center">
                         <div
                           className={`w-3 h-3 rounded-full ${
-                            measurement.systolicPressure >= 140 ||
-                            measurement.diastolicPressure >= 90
+                            isHypertensiveCrisis(
+                              measurement.systolicPressure,
+                              measurement.diastolicPressure
+                            )
                               ? "bg-red-500"
-                              : measurement.systolicPressure >= 130 ||
-                                measurement.diastolicPressure >= 80
-                              ? "bg-yellow-500"
+                              : isHypotensiveCrisis(
+                                  measurement.systolicPressure,
+                                  measurement.diastolicPressure
+                                )
+                              ? "bg-blue-700"
                               : "bg-green-500"
                           }`}
                           title={
-                            measurement.systolicPressure >= 140 ||
-                            measurement.diastolicPressure >= 90
+                            isHypertensiveCrisis(
+                              measurement.systolicPressure,
+                              measurement.diastolicPressure
+                            )
                               ? "Presión alta"
-                              : measurement.systolicPressure >= 130 ||
-                                measurement.diastolicPressure >= 80
-                              ? "Presión elevada"
+                              : isHypertensiveCrisis(
+                                  measurement.systolicPressure,
+                                  measurement.diastolicPressure
+                                )
+                              ? "Presión baja"
                               : "Presión normal"
                           }
                         />
@@ -239,11 +272,11 @@ export default function SharedMeasurementsPage() {
           </CardContent>
         </Card>
 
-        {/* Footer */}
         <div className="text-center mt-8 text-sm text-muted-foreground">
           <p>
             Este enlace es temporal y expirará automáticamente por seguridad.
           </p>
+
           <p className="mt-1">
             Generado el{" "}
             {format(

@@ -5,10 +5,10 @@ import jwt from "jsonwebtoken";
 import prismadb from "@/lib/prismadb";
 
 interface JWTPayload {
-  userId: string;
-  type: string;
-  iat: number;
   exp: number;
+  iat: number;
+  type: string;
+  userId: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -16,10 +16,7 @@ export async function POST(request: NextRequest) {
     const { token } = await request.json();
 
     if (!token) {
-      return NextResponse.json(
-        { error: "Token es requerido" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Token is required" }, { status: 400 });
     }
 
     let payload: JWTPayload;
@@ -32,7 +29,7 @@ export async function POST(request: NextRequest) {
     } catch {
       return NextResponse.json(
         {
-          error: "El enlace ha expirado o no es válido",
+          error: "The url has expired or is invalid",
           expired: true,
         },
         { status: 401 }
