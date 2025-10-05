@@ -563,7 +563,7 @@ describe("Form Component", () => {
       const description = screen.getByTestId("form-description");
 
       expect(description).toHaveTextContent("Enter your unique username");
-      expect(description).toHaveClass("text-sm", "text-muted-foreground");
+  expect(description).toHaveClass("text-base", "text-muted-foreground");
       expect(description).toHaveAttribute("id");
     });
 
@@ -680,8 +680,8 @@ describe("Form Component", () => {
           "Username must be at least 3 characters"
         );
         expect(message).toHaveClass(
-          "text-sm",
-          "font-medium",
+          "text-base",
+          "font-semibold",
           "text-destructive"
         );
       });

@@ -32,7 +32,7 @@ describe("Alert", () => {
 
     const alert = screen.getByRole("alert");
 
-    expect(alert).toHaveClass("text-blue-700");
+    expect(alert).toHaveClass("text-accent-foreground");
     expect(screen.getByText("Info alert")).toBeInTheDocument();
   });
 

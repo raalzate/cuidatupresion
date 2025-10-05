@@ -34,7 +34,7 @@ describe("Table components", () => {
 
       const table = screen.getByTestId("table");
       expect(table).toBeInTheDocument();
-      expect(table).toHaveClass("w-full caption-bottom text-sm custom-table");
+  expect(table).toHaveClass("w-full caption-bottom text-base custom-table");
     });
 
     it("forwards props to table element", () => {
@@ -143,7 +143,7 @@ describe("Table components", () => {
 
       expect(th).toBeInTheDocument();
       expect(th).toHaveClass(
-        "text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] custom-head"
+        "text-foreground h-14 px-4 text-left align-middle text-lg font-bold whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] custom-head"
       );
       expect(th).toHaveTextContent("Head");
     });
@@ -167,7 +167,7 @@ describe("Table components", () => {
 
       expect(td).toBeInTheDocument();
       expect(td).toHaveClass(
-        "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] custom-cell"
+        "px-4 py-3 align-middle text-base whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] custom-cell"
       );
       expect(td).toHaveTextContent("Cell");
     });
@@ -187,7 +187,7 @@ describe("Table components", () => {
 
       expect(caption).toBeInTheDocument();
       expect(caption).toHaveClass(
-        "text-muted-foreground mt-4 text-sm custom-caption"
+        "text-muted-foreground mt-4 text-base custom-caption"
       );
       expect(caption).toHaveTextContent("Caption");
     });

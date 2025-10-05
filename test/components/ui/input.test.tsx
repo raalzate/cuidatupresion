@@ -32,17 +32,19 @@ describe("Input Component", () => {
 
       expect(input).toHaveClass(
         "flex",
-        "h-10",
+        "h-12",
         "w-full",
-        "rounded-md",
+        "rounded-lg",
         "border",
         "border-input",
-        "bg-background",
-        "px-3",
-        "py-2",
-        "pr-10",
-        "text-sm",
-        "ring-offset-background"
+        "bg-white",
+        "px-4",
+        "py-3",
+        "pr-12",
+        "text-base",
+        "font-semibold",
+        "ring-offset-background",
+        "shadow-xs"
       );
     });
 
@@ -53,8 +55,9 @@ describe("Input Component", () => {
 
       expect(input).toHaveClass(
         "focus-visible:outline-none",
-        "focus-visible:ring-2",
-        "focus-visible:ring-ring",
+        "focus-visible:border-[rgba(30,86,49,0.7)]",
+        "focus-visible:ring-[rgba(30,86,49,0.4)]",
+        "focus-visible:ring-[4px]",
         "focus-visible:ring-offset-2",
         "disabled:cursor-not-allowed",
         "disabled:opacity-50"
@@ -69,8 +72,8 @@ describe("Input Component", () => {
       expect(input).toHaveClass(
         "file:border-0",
         "file:bg-transparent",
-        "file:text-sm",
-        "file:font-medium"
+        "file:text-base",
+        "file:font-semibold"
       );
     });
 
@@ -211,7 +214,7 @@ describe("Input Component", () => {
       const input = screen.getByTestId("test-input");
 
       expect(input).toHaveClass("custom-class", "border-red-500");
-      expect(input).toHaveClass("flex", "h-10", "w-full", "rounded-md");
+  expect(input).toHaveClass("flex", "h-12", "w-full", "rounded-lg");
     });
 
     it("should allow overriding default classes", () => {
@@ -220,21 +223,21 @@ describe("Input Component", () => {
       const input = screen.getByTestId("test-input");
 
       expect(input).toHaveClass("h-12", "bg-red-100");
-      expect(input).toHaveClass("flex", "w-full", "rounded-md");
+  expect(input).toHaveClass("flex", "w-full", "rounded-lg");
     });
 
     it("should handle empty className", () => {
       render(<Input className="" data-testid="test-input" />);
 
       const input = screen.getByTestId("test-input");
-      expect(input).toHaveClass("flex", "h-10", "w-full", "rounded-md");
+  expect(input).toHaveClass("flex", "h-12", "w-full", "rounded-lg");
     });
 
     it("should handle undefined className", () => {
       render(<Input className={undefined} data-testid="test-input" />);
 
       const input = screen.getByTestId("test-input");
-      expect(input).toHaveClass("flex", "h-10", "w-full", "rounded-md");
+  expect(input).toHaveClass("flex", "h-12", "w-full", "rounded-lg");
     });
   });
 

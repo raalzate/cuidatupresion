@@ -18,10 +18,14 @@ describe("Textarea", () => {
 
     const textarea = screen.getByTestId("textarea");
 
-    expect(textarea).toHaveClass("border-input");
-    expect(textarea).toHaveClass("min-h-16");
-    expect(textarea).toHaveClass("w-full");
-    expect(textarea).toHaveClass("rounded-md");
+  expect(textarea).toHaveClass("border-input");
+  expect(textarea).toHaveClass("min-h-20");
+  expect(textarea).toHaveClass("w-full");
+  expect(textarea).toHaveClass("rounded-lg");
+  expect(textarea).toHaveClass("bg-white");
+  expect(textarea).toHaveClass("px-4", "py-3");
+  expect(textarea).toHaveClass("text-base", "font-semibold");
+  expect(textarea).toHaveClass("shadow-xs");
   });
 
   it("should merge custom className with default classes", () => {
@@ -30,7 +34,8 @@ describe("Textarea", () => {
     const textarea = screen.getByTestId("textarea");
 
     expect(textarea).toHaveClass("custom-class");
-    expect(textarea).toHaveClass("border-input");
+  expect(textarea).toHaveClass("border-input");
+  expect(textarea).toHaveClass("rounded-lg");
   });
 
   it("should handle value prop", () => {
@@ -193,9 +198,9 @@ describe("Textarea", () => {
 
     const textarea = screen.getByTestId("textarea");
 
-    expect(textarea).toHaveClass("focus-visible:border-ring");
-    expect(textarea).toHaveClass("focus-visible:ring-ring/50");
-    expect(textarea).toHaveClass("focus-visible:ring-[3px]");
+  expect(textarea).toHaveClass("focus-visible:border-[rgba(30,86,49,0.7)]");
+  expect(textarea).toHaveClass("focus-visible:ring-[rgba(30,86,49,0.4)]");
+  expect(textarea).toHaveClass("focus-visible:ring-[4px]");
   });
 
   it("should apply aria-invalid styles", () => {
@@ -203,8 +208,8 @@ describe("Textarea", () => {
 
     const textarea = screen.getByTestId("textarea");
 
-    expect(textarea).toHaveClass("aria-invalid:ring-destructive/20");
-    expect(textarea).toHaveClass("dark:aria-invalid:ring-destructive/40");
+  expect(textarea).toHaveClass("aria-invalid:ring-[rgba(199,54,47,0.25)]");
+  expect(textarea).toHaveClass("dark:aria-invalid:ring-[rgba(241,106,106,0.4)]");
     expect(textarea).toHaveClass("aria-invalid:border-destructive");
   });
 

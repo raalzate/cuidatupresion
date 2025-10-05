@@ -40,7 +40,7 @@ export const Modal: React.FC<ModalProps> = ({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <div>{children}</div>
+        <div className="mt-6 flex flex-col gap-4">{children}</div>
       </DialogContent>
     </Dialog>
   );

@@ -125,11 +125,11 @@ export default function DashboardLayout({
     <SidebarProvider>
       <DashboardSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+  <header className="flex h-20 shrink-0 items-center gap-4 rounded-b-3xl bg-[var(--header)] px-6 text-[var(--header-foreground)] shadow-md transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-16">
           <SidebarTrigger className="-ml-1" />
           <Separator
             orientation="vertical"
-            className="mr-2 data-[orientation=vertical]:h-4"
+            className="mr-4 bg-[rgba(30,86,49,0.35)] data-[orientation=vertical]:h-6"
           />
           <DashboardBreadcrumb />
 
@@ -138,15 +138,15 @@ export default function DashboardLayout({
               onClick={handleInstall}
               variant="outline"
               size="sm"
-              className="ml-auto flex items-center gap-2"
+              className="ml-auto flex items-center gap-3"
             >
-              <DownloadIcon className="w-4 h-4" />
+              <DownloadIcon className="h-5 w-5" />
               Instalar App
             </Button>
           )}
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <div className="flex flex-1 flex-col gap-6 p-6 pt-6">
           {notificationPermission !== "default" &&
             notificationPermission !== "granted" && (
               <AppAlert

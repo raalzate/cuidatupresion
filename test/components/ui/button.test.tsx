@@ -27,18 +27,19 @@ describe("Button Component", () => {
         "inline-flex",
         "items-center",
         "justify-center",
-        "gap-2",
+        "gap-3",
         "whitespace-nowrap",
-        "rounded-md",
-        "text-sm",
-        "font-medium",
+        "rounded-lg",
+        "text-base",
+        "font-semibold",
+        "tracking-wide",
         "transition-all",
         "bg-primary",
         "text-primary-foreground",
         "shadow-xs",
-        "h-9",
-        "px-4",
-        "py-2"
+        "h-12",
+        "px-6",
+        "py-3"
       );
     });
 
@@ -131,7 +132,12 @@ describe("Button Component", () => {
 
       const button = screen.getByTestId("button");
 
-      expect(button).toHaveClass("border", "bg-background", "shadow-xs");
+      expect(button).toHaveClass(
+        "border",
+        "border-[rgba(64,169,68,0.6)]",
+        "bg-background",
+        "shadow-xs"
+      );
     });
 
     it("should render secondary variant correctly", () => {
@@ -160,7 +166,7 @@ describe("Button Component", () => {
       const button = screen.getByTestId("button");
 
       expect(button).toHaveClass(
-        "hover:bg-accent",
+        "hover:bg-[rgba(212,239,223,0.85)]",
         "hover:text-accent-foreground"
       );
       expect(button).not.toHaveClass("bg-primary", "shadow-xs");
@@ -175,7 +181,11 @@ describe("Button Component", () => {
 
       const button = screen.getByTestId("button");
 
-      expect(button).toHaveClass("text-primary", "underline-offset-4");
+      expect(button).toHaveClass(
+        "text-primary",
+        "underline-offset-4",
+        "hover:text-[#1C6F2E]"
+      );
       expect(button).not.toHaveClass("bg-primary", "shadow-xs");
     });
   });
@@ -190,7 +200,7 @@ describe("Button Component", () => {
 
       const button = screen.getByTestId("button");
 
-      expect(button).toHaveClass("h-9", "px-4", "py-2");
+      expect(button).toHaveClass("h-12", "px-6", "py-3");
     });
 
     it("should render sm size correctly", () => {
@@ -202,7 +212,13 @@ describe("Button Component", () => {
 
       const button = screen.getByTestId("button");
 
-      expect(button).toHaveClass("h-8", "rounded-md", "gap-1.5", "px-3");
+      expect(button).toHaveClass(
+        "h-10",
+        "rounded-md",
+        "gap-2",
+        "px-4",
+        "text-base"
+      );
     });
 
     it("should render lg size correctly", () => {
@@ -214,7 +230,7 @@ describe("Button Component", () => {
 
       const button = screen.getByTestId("button");
 
-      expect(button).toHaveClass("h-10", "rounded-md", "px-6");
+      expect(button).toHaveClass("h-14", "rounded-xl", "px-8", "text-lg");
     });
 
     it("should render icon size correctly", () => {
@@ -226,7 +242,7 @@ describe("Button Component", () => {
 
       const button = screen.getByTestId("button");
 
-      expect(button).toHaveClass("size-9");
+      expect(button).toHaveClass("size-12");
       expect(button).not.toHaveClass("px-4", "py-2");
     });
   });
@@ -241,7 +257,12 @@ describe("Button Component", () => {
 
       const button = screen.getByTestId("button");
 
-      expect(button).toHaveClass("bg-destructive", "text-white", "h-8", "px-3");
+      expect(button).toHaveClass(
+        "bg-destructive",
+        "text-white",
+        "h-10",
+        "px-4"
+      );
     });
 
     it("should render outline large button correctly", () => {
@@ -253,7 +274,13 @@ describe("Button Component", () => {
 
       const button = screen.getByTestId("button");
 
-      expect(button).toHaveClass("border", "bg-background", "h-10", "px-6");
+      expect(button).toHaveClass(
+        "border",
+        "border-[rgba(64,169,68,0.6)]",
+        "bg-background",
+        "h-14",
+        "px-8"
+      );
     });
 
     it("should render ghost icon button correctly", () => {
@@ -265,7 +292,10 @@ describe("Button Component", () => {
 
       const button = screen.getByTestId("button");
 
-      expect(button).toHaveClass("hover:bg-accent", "size-9");
+      expect(button).toHaveClass(
+        "hover:bg-[rgba(212,239,223,0.85)]",
+        "size-12"
+      );
       expect(button).not.toHaveClass("bg-primary", "px-4");
     });
   });
@@ -365,9 +395,9 @@ describe("Button Component", () => {
 
       expect(button).toHaveClass(
         "outline-none",
-        "focus-visible:border-ring",
-        "focus-visible:ring-ring/50",
-        "focus-visible:ring-[3px]"
+        "focus-visible:border-[rgba(30,86,49,0.7)]",
+        "focus-visible:ring-[rgba(30,86,49,0.4)]",
+        "focus-visible:ring-[4px]"
       );
     });
 
@@ -381,7 +411,7 @@ describe("Button Component", () => {
       const button = screen.getByTestId("button");
 
       expect(button).toHaveClass(
-        "aria-invalid:ring-destructive/20",
+        "aria-invalid:ring-[rgba(199,54,47,0.25)]",
         "aria-invalid:border-destructive"
       );
     });
@@ -425,8 +455,8 @@ describe("Button Component", () => {
       const button = screen.getByTestId("button");
       const icon = screen.getByTestId("icon");
 
-      expect(button).toContainElement(icon);
-      expect(button).toHaveClass("size-9");
+    expect(button).toContainElement(icon);
+    expect(button).toHaveClass("size-12");
     });
 
     it("should render complex children", () => {
@@ -487,8 +517,8 @@ describe("Button Component", () => {
 
       expect(classes).toContain("bg-primary");
       expect(classes).toContain("text-primary-foreground");
-      expect(classes).toContain("h-9");
-      expect(classes).toContain("px-4");
+    expect(classes).toContain("h-12");
+    expect(classes).toContain("px-6");
     });
 
     it("should generate correct classes for destructive variant", () => {
@@ -501,8 +531,8 @@ describe("Button Component", () => {
     it("should generate correct classes for small size", () => {
       const classes = buttonVariants({ size: "sm" });
 
-      expect(classes).toContain("h-8");
-      expect(classes).toContain("px-3");
+    expect(classes).toContain("h-10");
+    expect(classes).toContain("px-4");
     });
 
     it("should generate correct classes with custom className", () => {
@@ -513,7 +543,7 @@ describe("Button Component", () => {
       });
 
       expect(classes).toContain("border");
-      expect(classes).toContain("h-10");
+      expect(classes).toContain("h-14");
       expect(classes).toContain("custom-class");
     });
   });

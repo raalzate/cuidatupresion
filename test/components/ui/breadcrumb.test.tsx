@@ -69,10 +69,11 @@ describe("Breadcrumb Components", () => {
         "flex",
         "flex-wrap",
         "items-center",
-        "gap-1.5",
-        "text-sm",
+        "gap-2",
+        "text-base",
+        "font-semibold",
         "break-words",
-        "sm:gap-2.5"
+        "sm:gap-3"
       );
       expect(breadcrumbList.tagName).toBe("OL");
     });
@@ -132,7 +133,7 @@ describe("Breadcrumb Components", () => {
       expect(breadcrumbItem).toHaveClass(
         "inline-flex",
         "items-center",
-        "gap-1.5"
+        "gap-2"
       );
       expect(breadcrumbItem.tagName).toBe("LI");
     });
@@ -188,6 +189,7 @@ describe("Breadcrumb Components", () => {
       expect(breadcrumbLink).toHaveAttribute("data-slot", "breadcrumb-link");
       expect(breadcrumbLink).toHaveClass(
         "hover:text-foreground",
+        "text-foreground",
         "transition-colors"
       );
       expect(breadcrumbLink.tagName).toBe("A");
@@ -211,6 +213,7 @@ describe("Breadcrumb Components", () => {
       expect(breadcrumbLink).toHaveClass("custom-link-class");
       expect(breadcrumbLink).toHaveClass(
         "hover:text-foreground",
+        "text-foreground",
         "transition-colors"
       );
     });
@@ -264,7 +267,7 @@ describe("Breadcrumb Components", () => {
       expect(breadcrumbPage).toHaveAttribute("role", "link");
       expect(breadcrumbPage).toHaveAttribute("aria-disabled", "true");
       expect(breadcrumbPage).toHaveAttribute("aria-current", "page");
-      expect(breadcrumbPage).toHaveClass("text-foreground", "font-normal");
+  expect(breadcrumbPage).toHaveClass("text-foreground", "font-bold");
       expect(breadcrumbPage.tagName).toBe("SPAN");
       expect(breadcrumbPage).toHaveTextContent("Current Page");
     });
@@ -282,7 +285,7 @@ describe("Breadcrumb Components", () => {
       const breadcrumbPage = screen.getByTestId("breadcrumb-page");
 
       expect(breadcrumbPage).toHaveClass("custom-page-class");
-      expect(breadcrumbPage).toHaveClass("text-foreground", "font-normal");
+  expect(breadcrumbPage).toHaveClass("text-foreground", "font-bold");
     });
 
     it("should pass through additional props", () => {
@@ -311,7 +314,7 @@ describe("Breadcrumb Components", () => {
       );
       expect(breadcrumbSeparator).toHaveAttribute("role", "presentation");
       expect(breadcrumbSeparator).toHaveAttribute("aria-hidden", "true");
-      expect(breadcrumbSeparator).toHaveClass("[&>svg]:size-3.5");
+  expect(breadcrumbSeparator).toHaveClass("[&>svg]:size-5");
       expect(breadcrumbSeparator.tagName).toBe("LI");
 
       const icon = breadcrumbSeparator.querySelector("svg");
@@ -329,7 +332,7 @@ describe("Breadcrumb Components", () => {
       const breadcrumbSeparator = screen.getByTestId("breadcrumb-separator");
 
       expect(breadcrumbSeparator).toHaveClass("custom-separator-class");
-      expect(breadcrumbSeparator).toHaveClass("[&>svg]:size-3.5");
+  expect(breadcrumbSeparator).toHaveClass("[&>svg]:size-5");
     });
 
     it("should render custom children instead of default icon", () => {
@@ -383,7 +386,7 @@ describe("Breadcrumb Components", () => {
 
       const icon = breadcrumbEllipsis.querySelector("svg");
       expect(icon).toBeInTheDocument();
-      expect(icon).toHaveClass("size-4");
+    expect(icon).toHaveClass("size-5");
 
       const srText = screen.getByText("More");
       expect(srText).toBeInTheDocument();

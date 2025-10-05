@@ -22,9 +22,10 @@ describe("Label Component", () => {
       const label = screen.getByTestId("test-label");
 
       expect(label).toHaveClass(
-        "text-sm",
-        "font-medium",
-        "leading-none",
+        "text-base",
+        "font-bold",
+        "leading-tight",
+        "tracking-wide",
         "peer-disabled:cursor-not-allowed",
         "peer-disabled:opacity-70"
       );
@@ -155,9 +156,10 @@ describe("Label Component", () => {
 
       expect(label).toHaveClass("custom-class", "text-red-500");
       expect(label).toHaveClass(
-        "text-sm",
-        "font-medium",
-        "leading-none",
+        "text-base",
+        "font-bold",
+        "leading-tight",
+        "tracking-wide",
         "peer-disabled:cursor-not-allowed",
         "peer-disabled:opacity-70"
       );
@@ -189,9 +191,10 @@ describe("Label Component", () => {
       const label = screen.getByTestId("test-label");
 
       expect(label).toHaveClass(
-        "text-sm",
-        "font-medium",
-        "leading-none",
+        "text-base",
+        "font-bold",
+        "leading-tight",
+        "tracking-wide",
         "peer-disabled:cursor-not-allowed",
         "peer-disabled:opacity-70"
       );
@@ -207,9 +210,10 @@ describe("Label Component", () => {
       const label = screen.getByTestId("test-label");
 
       expect(label).toHaveClass(
-        "text-sm",
-        "font-medium",
-        "leading-none",
+        "text-base",
+        "font-bold",
+        "leading-tight",
+        "tracking-wide",
         "peer-disabled:cursor-not-allowed",
         "peer-disabled:opacity-70"
       );

@@ -4,14 +4,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const alertVariants = cva(
-  "relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current",
+  "relative grid w-full items-start gap-y-1.5 rounded-2xl border-2 border-[rgba(64,169,68,0.6)] bg-card px-6 py-5 text-base font-semibold has-[>svg]:grid-cols-[calc(var(--spacing)*5)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-4 [&>svg]:size-6 [&>svg]:translate-y-0.5 [&>svg]:text-current",
   {
     variants: {
       variant: {
-        default: "bg-card text-card-foreground",
+        default: "text-card-foreground",
         destructive:
-          "text-destructive bg-card [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90",
-        info: "text-blue-700 bg-card [&>svg]:text-blue-700 *:data-[slot=alert-description]:text-blue-700/90",
+          "border-[rgba(199,54,47,0.7)] text-destructive [&>svg]:text-destructive *:data-[slot=alert-description]:text-[rgba(199,54,47,0.85)]",
+  info: "border-[rgba(64,169,68,0.6)] text-accent-foreground [&>svg]:text-accent-foreground *:data-[slot=alert-description]:text-[rgba(30,86,49,0.9)]",
       },
     },
     defaultVariants: {
@@ -39,10 +39,7 @@ function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="alert-title"
-      className={cn(
-        "col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight",
-        className
-      )}
+      className={cn("col-start-2 text-xl font-bold tracking-tight", className)}
       {...props}
     />
   );
@@ -56,7 +53,7 @@ function AlertDescription({
     <div
       data-slot="alert-description"
       className={cn(
-        "text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed",
+        "col-start-2 grid justify-items-start gap-2 text-base font-medium text-muted-foreground [&_p]:leading-relaxed",
         className
       )}
       {...props}

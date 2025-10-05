@@ -216,7 +216,13 @@ describe("Dialog Component", () => {
       const header = screen.getByTestId("header");
 
       expect(header).toHaveAttribute("data-slot", "dialog-header");
-      expect(header).toHaveClass("flex", "flex-col", "gap-2");
+      expect(header).toHaveClass(
+        "flex",
+        "flex-col",
+        "gap-4",
+        "text-center",
+        "sm:text-left"
+      );
     });
 
     it("should render with custom className", () => {
@@ -248,8 +254,8 @@ describe("Dialog Component", () => {
 
       const title = screen.getByTestId("title");
 
-      expect(title).toHaveAttribute("data-slot", "dialog-title");
-      expect(title).toHaveClass("text-lg", "leading-none", "font-semibold");
+  expect(title).toHaveAttribute("data-slot", "dialog-title");
+  expect(title).toHaveClass("text-2xl", "leading-snug", "font-bold");
       expect(title).toHaveTextContent("Test Title");
     });
 
@@ -301,7 +307,11 @@ describe("Dialog Component", () => {
       const description = screen.getByTestId("description");
 
       expect(description).toHaveAttribute("data-slot", "dialog-description");
-      expect(description).toHaveClass("text-muted-foreground", "text-sm");
+      expect(description).toHaveClass(
+        "text-muted-foreground",
+        "text-base",
+        "font-medium"
+      );
       expect(description).toHaveTextContent("Test Description");
     });
 
@@ -362,7 +372,13 @@ describe("Dialog Component", () => {
       const footer = screen.getByTestId("footer");
 
       expect(footer).toHaveAttribute("data-slot", "dialog-footer");
-      expect(footer).toHaveClass("flex", "flex-col-reverse", "gap-2");
+      expect(footer).toHaveClass(
+        "flex",
+        "flex-col-reverse",
+        "gap-3",
+        "sm:flex-row",
+        "sm:justify-end"
+      );
     });
 
     it("should render with custom className", () => {

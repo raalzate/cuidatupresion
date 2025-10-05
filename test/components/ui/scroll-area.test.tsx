@@ -3,7 +3,9 @@ import React from "react";
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
-jest.mock("@radix-ui/react-scroll-area", () => ({
+jest.mock(
+  "@radix-ui/react-scroll-area",
+  () => ({
   Root: ({
     children,
     className,
@@ -62,7 +64,9 @@ jest.mock("@radix-ui/react-scroll-area", () => ({
   Corner: (props: { [key: string]: unknown }) => (
     <div data-testid="scroll-area-corner" {...props} />
   ),
-}));
+  }),
+  { virtual: true }
+);
 
 describe("ScrollArea", () => {
   it("should render correctly", () => {
@@ -118,10 +122,11 @@ describe("ScrollArea", () => {
 
     const viewport = screen.getByTestId("scroll-area-viewport");
 
-    expect(viewport).toHaveClass("focus-visible:ring-ring/50");
+  expect(viewport).toHaveClass("focus-visible:ring-[rgba(30,86,49,0.5)]");
     expect(viewport).toHaveClass("size-full");
     expect(viewport).toHaveClass("rounded-[inherit]");
-    expect(viewport).toHaveClass("focus-visible:ring-[3px]");
+  expect(viewport).toHaveClass("focus-visible:ring-[3px]");
+  expect(viewport).toHaveClass("focus-visible:outline-1");
   });
 
   it("should render children inside viewport", () => {

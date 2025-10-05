@@ -35,11 +35,13 @@ describe("Card Component", () => {
         "text-card-foreground",
         "flex",
         "flex-col",
-        "gap-6",
-        "rounded-xl",
-        "border",
-        "py-6",
-        "shadow-sm"
+        "gap-8",
+        "rounded-2xl",
+        "border-2",
+        "border-[rgba(64,169,68,0.6)]",
+        "px-8",
+        "py-8",
+        "shadow-md"
       );
     });
 
@@ -161,8 +163,10 @@ describe("CardHeader Component", () => {
         "auto-rows-min",
         "grid-rows-[auto_auto]",
         "items-start",
-        "gap-1.5",
-        "px-6"
+        "gap-3",
+        "px-0",
+        "has-data-[slot=card-action]:grid-cols-[1fr_auto]",
+        "[.border-b]:pb-6"
       );
     });
 
@@ -211,7 +215,12 @@ describe("CardTitle Component", () => {
 
       const title = screen.getByTestId("card-title");
 
-      expect(title).toHaveClass("leading-none", "font-semibold");
+      expect(title).toHaveClass(
+        "text-2xl",
+        "font-bold",
+        "leading-tight",
+        "text-foreground"
+      );
     });
 
     it("should render with custom className", () => {
@@ -224,7 +233,12 @@ describe("CardTitle Component", () => {
       const title = screen.getByTestId("card-title");
 
       expect(title).toHaveClass("custom-title-class");
-      expect(title).toHaveClass("leading-none", "font-semibold");
+      expect(title).toHaveClass(
+        "text-2xl",
+        "font-bold",
+        "leading-tight",
+        "text-foreground"
+      );
     });
   });
 });
@@ -254,7 +268,10 @@ describe("CardDescription Component", () => {
 
       const description = screen.getByTestId("card-description");
 
-      expect(description).toHaveClass("text-muted-foreground", "text-sm");
+      expect(description).toHaveClass(
+        "text-muted-foreground",
+        "text-base"
+      );
     });
 
     it("should render with custom className", () => {
@@ -270,7 +287,10 @@ describe("CardDescription Component", () => {
       const description = screen.getByTestId("card-description");
 
       expect(description).toHaveClass("custom-description-class");
-      expect(description).toHaveClass("text-muted-foreground", "text-sm");
+      expect(description).toHaveClass(
+        "text-muted-foreground",
+        "text-base"
+      );
     });
   });
 });
@@ -342,9 +362,9 @@ describe("CardContent Component", () => {
         <CardContent data-testid="card-content">Main content area</CardContent>
       );
 
-      const content = screen.getByTestId("card-content");
+    const content = screen.getByTestId("card-content");
 
-      expect(content).toHaveClass("px-6");
+    expect(content).toHaveClass("px-0");
     });
 
     it("should render with custom className", () => {
@@ -357,10 +377,10 @@ describe("CardContent Component", () => {
         </CardContent>
       );
 
-      const content = screen.getByTestId("card-content");
+    const content = screen.getByTestId("card-content");
 
-      expect(content).toHaveClass("custom-content-class");
-      expect(content).toHaveClass("px-6");
+    expect(content).toHaveClass("custom-content-class");
+    expect(content).toHaveClass("px-0");
     });
   });
 });
@@ -382,7 +402,13 @@ describe("CardFooter Component", () => {
 
       const footer = screen.getByTestId("card-footer");
 
-      expect(footer).toHaveClass("flex", "items-center", "px-6");
+      expect(footer).toHaveClass(
+        "flex",
+        "items-center",
+        "gap-4",
+        "px-0",
+        "[.border-t]:pt-6"
+      );
     });
 
     it("should render with custom className", () => {
@@ -395,7 +421,13 @@ describe("CardFooter Component", () => {
       const footer = screen.getByTestId("card-footer");
 
       expect(footer).toHaveClass("custom-footer-class");
-      expect(footer).toHaveClass("flex", "items-center", "px-6");
+      expect(footer).toHaveClass(
+        "flex",
+        "items-center",
+        "gap-4",
+        "px-0",
+        "[.border-t]:pt-6"
+      );
     });
   });
 });

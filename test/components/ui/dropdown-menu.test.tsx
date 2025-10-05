@@ -156,7 +156,10 @@ describe("DropdownMenu Component", () => {
         "bg-popover",
         "text-popover-foreground",
         "z-50",
-        "min-w-[8rem]"
+        "min-w-[10rem]",
+        "rounded-xl",
+        "border-2",
+        "border-[rgba(64,169,68,0.45)]"
       );
     });
 
@@ -463,8 +466,8 @@ describe("DropdownMenu Component", () => {
 
       const label = screen.getByTestId("label");
 
-      expect(label).toHaveAttribute("data-slot", "dropdown-menu-label");
-      expect(label).toHaveClass("px-2", "py-1.5", "text-sm", "font-medium");
+  expect(label).toHaveAttribute("data-slot", "dropdown-menu-label");
+  expect(label).toHaveClass("px-3", "py-2", "text-base", "font-bold");
       expect(label).toHaveTextContent("Menu Label");
     });
 
@@ -505,7 +508,7 @@ describe("DropdownMenu Component", () => {
       const separator = screen.getByTestId("separator");
 
       expect(separator).toHaveAttribute("data-slot", "dropdown-menu-separator");
-      expect(separator).toHaveClass("bg-border", "-mx-1", "my-1", "h-px");
+  expect(separator).toHaveClass("bg-border", "-mx-2", "my-2", "h-px");
     });
 
     it("should render with custom className", () => {
@@ -550,7 +553,8 @@ describe("DropdownMenu Component", () => {
       expect(shortcut).toHaveClass(
         "text-muted-foreground",
         "ml-auto",
-        "text-xs"
+        "text-sm",
+        "tracking-wider"
       );
       expect(shortcut).toHaveTextContent("⌘C");
     });
