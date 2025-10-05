@@ -62,9 +62,9 @@ export const MeasurementClient: React.FC<MeasurementClientProps> = ({
           title="Mediciones"
         />
 
-        <Button onClick={handleCreateShareUrl}>
-          <Share className="mr-2 h-4 w-4" />
-          Compartir
+        <Button onClick={handleCreateShareUrl} className="h-9">
+          <Share className="h-4 w-4 sm:mr-2" />
+          <span className="hidden sm:inline">Compartir</span>
         </Button>
       </div>
 

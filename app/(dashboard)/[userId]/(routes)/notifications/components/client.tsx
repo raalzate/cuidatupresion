@@ -35,9 +35,10 @@ export const NotificationsClient: React.FC<NotificationsClientProps> = ({
           onClick={() => {
             router.push(`/${userId}/notifications/new`);
           }}
+          className="h-9"
         >
-          <Plus className="mr-2 h-4 w-4" />
-          Agregar
+          <Plus className="h-4 w-4 sm:mr-2" />
+          <span className="hidden sm:inline">Agregar</span>
         </Button>
       </div>
 

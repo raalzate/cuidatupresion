@@ -81,61 +81,61 @@ export const BloodPressureChart: React.FC<BloodPressureChartProps> = ({ data }) 
   };
 
   return (
-    <div className="w-full  mx-auto font-sans p-4">
-      <div className="w-full h-[400px]">
-        <h3 className="text-xl font-bold text-center mb-1 text-gray-800">
+    <div className="w-full mx-auto font-sans p-2 sm:p-4">
+      <div className="w-full h-[300px] sm:h-[400px]">
+        <h3 className="text-lg sm:text-xl font-bold text-center mb-1 text-gray-800">
           Monitorización de Presión Arterial
         </h3>
-        <p className="text-center text-xs text-gray-500 mb-4">
+        <p className="text-center text-xs text-gray-500 mb-2 sm:mb-4">
           Período: {startDate.toLocaleString()} - {endDate.toLocaleString()}
         </p>
         <ResponsiveContainer>
            {/* ... (resto del JSX sin cambios) ... */}
-           <LineChart data={filteredData} margin={{ top: 5, right: 40, left: 20, bottom: 20 }}>
+           <LineChart data={filteredData} margin={{ top: 5, right: 20, left: 0, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey="timestamp" type="number" domain={[startDate.getTime(), endDate.getTime()]} tickFormatter={formatXAxisTick} tick={{ fontSize: 12, fill: '#374151' }} axisLine={{ stroke: '#9ca3af' }} tickLine={{ stroke: '#9ca3af' }} >
-              <Label value="Hora del día" offset={-15} position="insideBottom" fill="#374151" />
+            <XAxis dataKey="timestamp" type="number" domain={[startDate.getTime(), endDate.getTime()]} tickFormatter={formatXAxisTick} tick={{ fontSize: 10, fill: '#374151' }} axisLine={{ stroke: '#9ca3af' }} tickLine={{ stroke: '#9ca3af' }} >
+              <Label value="Hora del día" offset={-15} position="insideBottom" fill="#374151" className="text-xs" />
             </XAxis>
-            <YAxis domain={[40, 'dataMax + 20']} tick={{ fontSize: 12, fill: '#374151' }} axisLine={{ stroke: '#9ca3af' }} tickLine={{ stroke: '#9ca3af' }} >
-               <Label value="Presión (mmHg)" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} fill="#374151" />
+            <YAxis domain={[40, 'dataMax + 20']} tick={{ fontSize: 10, fill: '#374151' }} axisLine={{ stroke: '#9ca3af' }} tickLine={{ stroke: '#9ca3af' }} >
+               <Label value="Presión (mmHg)" angle={-90} position="insideLeft" style={{ textAnchor: 'middle' }} fill="#374151" className="text-xs" />
             </YAxis>
             <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#d1d5db', strokeWidth: 1 }} />
-            <Legend verticalAlign="top" wrapperStyle={{ paddingBottom: '20px' }} />
-            {analysis.systolicAvg > 0 && <ReferenceLine y={analysis.systolicAvg} stroke="#3b82f6" strokeDasharray="4 4"><Label value={`Prom. ${analysis.systolicAvg}`} position="right" fill="#3b82f6" fontSize={12} /></ReferenceLine>}
-            {analysis.diastolicAvg > 0 && <ReferenceLine y={analysis.diastolicAvg} stroke="#22c55e" strokeDasharray="4 4"><Label value={`Prom. ${analysis.diastolicAvg}`} position="right" fill="#22c55e" fontSize={12} /></ReferenceLine>}
-            <Line type="linear" dataKey="systolic" name="Sistólica" stroke="#3b82f6" strokeWidth={3} dot={{ r: 3, fill: '#3b82f6' }} activeDot={{ r: 6 }} />
-            <Line type="linear" dataKey="diastolic" name="Diastólica" stroke="#22c55e" strokeWidth={3} dot={{ r: 3, fill: '#22c55e' }} activeDot={{ r: 6 }} />
+            <Legend verticalAlign="top" wrapperStyle={{ paddingBottom: '10px', fontSize: '12px' }} />
+            {analysis.systolicAvg > 0 && <ReferenceLine y={analysis.systolicAvg} stroke="#3b82f6" strokeDasharray="4 4"><Label value={`Prom. ${analysis.systolicAvg}`} position="right" fill="#3b82f6" fontSize={10} /></ReferenceLine>}
+            {analysis.diastolicAvg > 0 && <ReferenceLine y={analysis.diastolicAvg} stroke="#22c55e" strokeDasharray="4 4"><Label value={`Prom. ${analysis.diastolicAvg}`} position="right" fill="#22c55e" fontSize={10} /></ReferenceLine>}
+            <Line type="linear" dataKey="systolic" name="Sistólica" stroke="#3b82f6" strokeWidth={2} dot={{ r: 2, fill: '#3b82f6' }} activeDot={{ r: 5 }} />
+            <Line type="linear" dataKey="diastolic" name="Diastólica" stroke="#22c55e" strokeWidth={2} dot={{ r: 2, fill: '#22c55e' }} activeDot={{ r: 5 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>
       
-      <div className="mt-8 pt-12">
-        <h4 className="text-lg font-semibold text-center text-gray-800 mb-4">Análisis del Período</h4>
+      <div className="mt-4 sm:mt-8 pt-6 sm:pt-12">
+        <h4 className="text-base sm:text-lg font-semibold text-center text-gray-800 mb-3 sm:mb-4">Análisis del Período</h4>
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left">
+          <table className="w-full border-collapse text-left text-sm">
             {/* ... (tabla sin cambios) ... */}
             <thead>
               <tr className="bg-gray-100">
-                <th className="p-3 border border-gray-300 font-semibold text-gray-700">Métrica</th>
-                <th className="p-3 border border-gray-300 font-semibold text-gray-700 text-center">Valor Sistólica (mmHg)</th>
-                <th className="p-3 border border-gray-300 font-semibold text-gray-700 text-center">Valor Diastólica (mmHg)</th>
+                <th className="p-2 sm:p-3 border border-gray-300 font-semibold text-gray-700 text-xs sm:text-sm">Métrica</th>
+                <th className="p-2 sm:p-3 border border-gray-300 font-semibold text-gray-700 text-center text-xs sm:text-sm">Valor Sistólica (mmHg)</th>
+                <th className="p-2 sm:p-3 border border-gray-300 font-semibold text-gray-700 text-center text-xs sm:text-sm">Valor Diastólica (mmHg)</th>
               </tr>
             </thead>
             <tbody className="bg-white">
               <tr>
-                <td className="p-3 border border-gray-300 font-bold">Promedio</td>
-                <td className="p-3 border border-gray-300 text-center">{analysis.systolicAvg}</td>
-                <td className="p-3 border border-gray-300 text-center">{analysis.diastolicAvg}</td>
+                <td className="p-2 sm:p-3 border border-gray-300 font-bold text-xs sm:text-sm">Promedio</td>
+                <td className="p-2 sm:p-3 border border-gray-300 text-center text-xs sm:text-sm">{analysis.systolicAvg}</td>
+                <td className="p-2 sm:p-3 border border-gray-300 text-center text-xs sm:text-sm">{analysis.diastolicAvg}</td>
               </tr>
               <tr>
-                <td className="p-3 border border-gray-300 font-bold">Máximo</td>
-                <td className="p-3 border border-gray-300 text-center">{analysis.systolicMax}</td>
-                <td className="p-3 border border-gray-300 text-center">{analysis.diastolicMax}</td>
+                <td className="p-2 sm:p-3 border border-gray-300 font-bold text-xs sm:text-sm">Máximo</td>
+                <td className="p-2 sm:p-3 border border-gray-300 text-center text-xs sm:text-sm">{analysis.systolicMax}</td>
+                <td className="p-2 sm:p-3 border border-gray-300 text-center text-xs sm:text-sm">{analysis.diastolicMax}</td>
               </tr>
               <tr>
-                <td className="p-3 border border-gray-300 font-bold">Mínimo</td>
-                <td className="p-3 border border-gray-300 text-center">{analysis.systolicMin}</td>
-                <td className="p-3 border border-gray-300 text-center">{analysis.diastolicMin}</td>
+                <td className="p-2 sm:p-3 border border-gray-300 font-bold text-xs sm:text-sm">Mínimo</td>
+                <td className="p-2 sm:p-3 border border-gray-300 text-center text-xs sm:text-sm">{analysis.systolicMin}</td>
+                <td className="p-2 sm:p-3 border border-gray-300 text-center text-xs sm:text-sm">{analysis.diastolicMin}</td>
               </tr>
             </tbody>
           </table>

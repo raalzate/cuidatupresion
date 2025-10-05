@@ -47,10 +47,6 @@ export async function POST(
       repeatInterval = 0,
     } = body;
 
-    if (!pushToken) {
-      return new NextResponse("Push token is required", { status: 400 });
-    }
-
     if (!title) {
       return new NextResponse("Title is required", { status: 400 });
     }
@@ -63,7 +59,7 @@ export async function POST(
       return new NextResponse("Start date is required", { status: 400 });
     }
 
-    if (!additionalNotes) {
+    if (additionalNotes === undefined || additionalNotes === null) {
       return new NextResponse("Additional notes are required", {
         status: 400,
       });
